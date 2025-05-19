@@ -64,14 +64,32 @@ export default function Home() {
       </section>
 
       {/* Bottom Section */}
-      <section className="flex justify-center items-center flex-nowrap gap-x-6 sm:gap-x-12 md:gap-x-20 mt-10">
+      <section className="flex justify-center items-center flex-nowrap gap-x-6 sm:gap-x-12 md:gap-x-20 mt-10 mb-10">
         <div className="flex flex-col border border-amber-100 rounded-xl p-4 gap-1.5 items-center text-center max-w-xs">
           <h1 className="text-xl font-semibold">TYPE</h1>
-          <h4 className="text-sm">Help us do some choir songs typing</h4>
+          <h4
+            className="text-sm overflow-hidden text-ellipsis"
+            style={{
+              display: '-webkit-box',
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: 'vertical',
+            }}
+          >
+            Help us do some choir songs typing
+          </h4>
         </div>
         <div className="flex flex-col border border-amber-100 rounded-xl p-4 gap-1.5 items-center text-center max-w-xs">
           <h1 className="text-xl font-semibold">EDIT</h1>
-          <h4 className="text-sm">Help us proofread already typed songszz</h4>
+          <h4
+            className="text-sm overflow-hidden text-ellipsis"
+            style={{
+              display: '-webkit-box',
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: 'vertical',
+            }}
+          >
+            Help us proofread <span className="hidden sm:inline">already </span>typed songs
+          </h4>
         </div>
       </section>
     </main>
