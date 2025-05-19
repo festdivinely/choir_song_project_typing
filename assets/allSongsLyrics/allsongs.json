@@ -1,0 +1,114 @@
+[
+    {
+      "title": "WHERE IS THE FIRST LOVE WHEN YOU BEGAN WITH GOD",
+      "key": "G-MAJOR",
+      "sections": [
+        {
+          "type": "solo",
+          "label": "SOLO1",
+          "lyrics": "Oh my brethren come to Jesus now, \nheaven is real, hell fire is real,\nwhat will you do when the saints are gone,\namend your ways before it will too late"
+        },
+        {
+          "type": "chorus",
+          "label": "CHORUS1",
+          "lyrics": "Where is the first love wen you began with God\nwhere is the zeal that was burning like fire, \nwhat have you done, where have you been, \nJesus is calling my child come back to me"
+        },
+        {
+          "type": "solo",
+          "label": "SOLO2",
+          "lyrics": "After this labour you find yourself in hell,\nwhat will you say that hindered you heaven,\nthe Lord of host is calling you today,\namend your ways before it will be late"
+        }
+      ]
+    },
+    {
+      "title": "CHOSEN IS THE MOUNTAIN OF THE LORD",
+      "key": "C",
+      "sections": [
+        { "type": "call", "label": "CALL1", "lyrics": "The mountain of the Lord's \nhouse shall be established on top of the mountain, \nand it shall be exalted above the hills." },
+        { "type": "response", "label": "RESPONSE1", "lyrics": "Chosen is the mountain of the Lord" },
+        { "type": "call", "label": "CALL2", "lyrics": "And all nations shall flow into \nit saying come let us go to the mountain \nto the house of the God of Lazarus" },
+        { "type": "response", "label": "RESPONSE2", "lyrics": "Chosen is the mountain of the Lord" },
+        { "type": "call", "label": "CALL3", "lyrics": "The Lord's Chosen" },
+        { "type": "response", "label": "RESPONSE3", "lyrics": "Chosen is the mountain of the Lord's house,\nwhere there is love and holiness,\nThe place of joy, the last day goshen,\nChosen is mountain of the Lord" },
+        { "type": "call", "label": "CALL4", "lyrics": "The Lord's Chosen" },
+        { "type": "response", "label": "RESPONSE4", "lyrics": "Chosen is the mountain of the Lord's house,\nwhere the power of God is manifested,\nyou come with sorrow, you go back with joy,\nChosen is the mountain of the Lord" },
+        { "type": "call", "label": "CALL5", "lyrics": "Are you weak and heavy laden, come to Chosen" },
+        { "type": "response", "label": "RESPONSE5", "lyrics": "Oh yes!" },
+        { "type": "call", "label": "CALL6", "lyrics": "Are you cumbered with a load of care, come to chosen" },
+        { "type": "response", "label": "RESPONSE6", "lyrics": "Oh yes!" },
+        { "type": "call", "label": "CALL7", "lyrics": "Our God is great, he's full of power, He'll give you rest" },
+        { "type": "response", "label": "RESPONSE7", "lyrics": "Today!" },
+        { "type": "call", "label": "CALL8", "lyrics": "So go and tell every one, chosen is the great mountain" },
+        { "type": "response", "label": "RESPONSE8", "lyrics": "Of the Lord" },
+        { "type": "call", "label": "CALL9", "lyrics": "Go and tell everyone, Our God is great, so great" },
+        { "type": "response", "label": "RESPONSE9", "lyrics": "So great, so great" },
+        { "type": "call", "label": "CALL10", "lyrics": "When you ask your mama, she'll tell you" },
+        { "type": "response", "label": "RESPONSE10", "lyrics": "Chosen is the mountain of the Lord" },
+        { "type": "call", "label": "CALL11", "lyrics": "Ask your father, he'll say" },
+        { "type": "response", "label": "RESPONSE11", "lyrics": "Chosen is the mountain of the Lord" }
+      ]
+    },
+    {
+      "title": "DESTINED TO WIN",
+      "key": "G",
+      "sections": [
+        {
+          "type": "solo",
+          "label": "SOLO1",
+          "lyrics": "The song for all the people,\nwith light in there hearts and love\nin their eyes, you don't have to worry,\nwhen the mountains seems of infinite size,\nThere's one who goes before you to calm the sea,\nThere's a king who leads his people to victory,"
+        },
+        { "type": "call", "label": "CALL1", "lyrics": "We are" },
+        {
+          "type": "chorus",
+          "label": "CHORUS1",
+          "lyrics": "Destined to wun,we're surroundd by his blood,\nguided by his power,\ndestined to win, as we following the Lord till the battle is over,\nwe are destined to win"
+        },
+        {
+          "type": "solo",
+          "label": "SOLO2",
+          "lyrics": "We all get discourged when pleasures of life are weighing us down,\nwe've learn't in his foot steps that courses of life must proceed the crown\nThere's one who goes before you to calm the sea,\nThere is a king who leads his people to victory"
+        },
+        { "type": "call", "label": "CALL2", "lyrics": "We are" },
+        {
+          "type": "solo",
+          "label": "SOLO3",
+          "lyrics": "We've got to remember, its our destiny to win in the end,\nwith God on our side, we are destined to win, destined to win"
+        },
+        { "type": "call", "label": "CALL3", "lyrics": "We Are" },
+        { "type": "call", "label": "CALL4", "lyrics": "Through the love of Christ our Saviour" },
+        { "type": "response", "label": "RESPONSE1", "lyrics": "All shall be well" },
+        { "type": "call", "label": "CALL5", "lyrics": "Free and changeless is his favour" },
+        { "type": "response", "label": "RESPONSE2", "lyrics": "All shall be well" },
+        { "type": "call", "label": "CALL6", "lyrics": "Though we go through tribulations" },
+        { "type": "response", "label": "RESPONSE3", "lyrics": "All shall be well" },
+        { "type": "call", "label": "CALL7", "lyrics": "Ours is such a full salvation" },
+        { "type": "response", "label": "RESPONSE4", "lyrics": "All shall be well" },
+        { "type": "call", "label": "CALL8", "lyrics": "We expect a bright tommorrow" },
+        { "type": "response", "label": "RESPONSE5", "lyrics": "All shall be well" },
+        { "type": "call", "label": "CALL9", "lyrics": "Faith can sing through days of sorrow" },
+        { "type": "response", "label": "RESPONSE6", "lyrics": "All shall be well" }
+      ]
+    },
+    {
+      "title": "TAKE ME BACK",
+      "key": "F",
+      "sections": [
+        {
+          "type": "solo",
+          "label": "SOLO",
+          "lyrics": "I remember the first time i talked with the Lord,\nas i fell on my kneels in the nigth \nwhen the passions and pleasures and things of this world \nhas taken the cross from my side, \nbut i long to go back, To the place i was once\nand to be what i know i should be"
+        },
+        {
+          "type": "chorus",
+          "label": "CHORUS1",
+          "lyrics": "For i can't stay any longer,\ntake me back Lord to calvary"
+        },
+        {
+          "type": "bridge",
+          "label": "BRIDGE",
+          "lyrics": "Lord i surrender\nLord i surrender\nLord i surrender\nlord i surrender\nAnd give you my all"
+        }
+      ]
+    }
+  ]
+  
