@@ -1,8 +1,8 @@
 import React from 'react';
 import { images } from '../constants/images';
-// import TypeAndEditBtn from './components/typeAndEditBtn';
-// import MenuBtns from './components/menuBtns';
-// import TypewriterText from './components/typewritter';
+import MenuBtns from "../components/menuBtns"
+import TypewriterText from "../components/typeWritter"
+import TypeAndEditBtn from "../components/typeAndEditBtn"
 
 export default function Home() {
   return (
@@ -11,12 +11,12 @@ export default function Home() {
       style={{ backgroundImage: `url(${images.bluishbg.src})` }}
     >
       {/* Top Section */}
-      {/* <MenuBtns /> */}
+      <MenuBtns />
 
-      {/* <TypewriterText /> */}
+      <TypewriterText />
 
       {/* Bottom Section */}
-      {/* <TypeAndEditBtn /> */}
+      <TypeAndEditBtn />
     </main>
   );
 }
