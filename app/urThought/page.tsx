@@ -4,8 +4,8 @@ import { images } from '../../constants/images';
 function ShareUrOpinion() {
   return (
     <div
-      className="min-h-screen flex items-center justify-center bg-cover bg-center text-white px-4 sm:px-6 md:px-8 py-10"
-      style={{ backgroundImage: `url(${images.bluesky.src})` }}
+      className="min-h-screen flex justify-center bg-cover bg-center text-white px-8 py-6"
+      style={{ backgroundImage: `url(${images.bluishbg.src})` }}
     >
       <div className="w-full max-w-2xl bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-6 sm:p-10 shadow-2xl">
         <h2 className="text-3xl sm:text-4xl font-bold text-center mb-6">Share Your Opinion</h2>

@@ -10,7 +10,7 @@ function TypeAndEditBtn() {
       {/* TYPE Box */}
       <div
         onClick={() => router.push("/type")}
-        className="cursor-pointer flex flex-col border border-amber-100 rounded-xl p-4 gap-1.5 items-center text-center max-w-xs transition-transform hover:scale-105"
+        className="bg-blue-200/20 backdrop-blur-md shadow-lg cursor-pointer flex flex-col border border-amber-100 rounded-xl p-4 gap-1.5 items-center text-center max-w-xs transition-transform hover:scale-105"
       >
         <h1 className="text-xl font-semibold">TYPE</h1>
         <h4
@@ -28,7 +28,7 @@ function TypeAndEditBtn() {
       {/* EDIT Box */}
       <div
         onClick={() => router.push("/edit")}
-        className="cursor-pointer flex flex-col border border-amber-100 rounded-xl p-4 gap-1.5 items-center text-center max-w-xs transition-transform hover:scale-105"
+        className="bg-blue-100/20 backdrop-blur-md shadow-lg cursor-pointer flex flex-col border border-amber-100 rounded-xl p-4 gap-1.5 items-center text-center max-w-xs transition-transform hover:scale-105"
       >
         <h1 className="text-xl font-semibold">EDIT</h1>
         <h4

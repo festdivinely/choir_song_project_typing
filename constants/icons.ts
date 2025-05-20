@@ -17,6 +17,9 @@ import pause from "@/assets/icons/pause.png"
 import contactus from "@/assets/icons/contactus.png"
 import thoughts from "@/assets/icons/thoughts.png"
 import hamburger from "@/assets/icons/hamburger.png"
+import cancel from "@/assets/icons/cancel.png"
+import writtinghand from "@/assets/icons/writtinghand.png"
+import eraserhand from "@/assets/icons/eraserhand.png"
 
 export const icons = {
   home,
@@ -37,5 +40,8 @@ export const icons = {
   pause,
   contactus,
   thoughts,
-  hamburger
+  hamburger,
+  cancel,
+  writtinghand,
+  eraserhand
 };

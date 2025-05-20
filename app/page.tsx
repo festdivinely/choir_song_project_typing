@@ -2,6 +2,7 @@ import React from 'react';
 import { images } from '../constants/images';
 import TypeAndEditBtn from './components/typeAndEditBtn';
 import MenuBtns from './components/menuBtns';
+import TypewriterText from './components/typewritter';
 
 export default function Home() {
   return (
@@ -11,6 +12,8 @@ export default function Home() {
     >
       {/* Top Section */}
       <MenuBtns />
+
+      <TypewriterText />
 
       {/* Bottom Section */}
       <TypeAndEditBtn />
