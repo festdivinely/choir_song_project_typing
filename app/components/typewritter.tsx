@@ -8,7 +8,6 @@ const sentences = [
   "Consectetur adipiscing elit.",
   "Vestibulum ante ipsum primis.",
   "Curabitur vel sem at nulla tincidunt.",
-  "Donec viverra est at sapien aliquet.",
 ];
 
 const TypewriterText = () => {
