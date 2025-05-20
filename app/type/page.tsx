@@ -2,7 +2,9 @@ import React from 'react'
 
 function typedSongs() {
   return (
-    <div>typedSongs</div>
+    <div>
+      <div>all typed songs</div>
+    </div>
   )
 }
 
