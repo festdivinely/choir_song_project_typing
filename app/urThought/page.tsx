@@ -1,69 +1,68 @@
 import React from 'react';
-import bluishbg from '../../assets/images/bluishbg.png'; // Adjust the path as needed
+import { images } from '../../constants/images';
 
-const ShareUrOpinion: React.FC = () => {
+function ShareUrOpinion() {
   return (
     <div
-      className="min-h-screen flex justify-center items-center bg-cover bg-center text-white px-8 py-6"
-      style={{ backgroundImage: `url(${bluishbg})` }}
+      className="min-h-screen flex justify-center bg-cover bg-center text-white px-8 py-6"
+      style={{ backgroundImage: `url(${images.bluishbg.src})` }}
     >
       <div className="w-full max-w-2xl bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-6 sm:p-10 shadow-2xl">
         <h2 className="text-3xl sm:text-4xl font-bold text-center mb-6">Share Your Opinion</h2>
-        
         <form className="space-y-4">
-          {/* Name Field */}
+          {/* Name */}
           <div>
-            <label htmlFor="name" className="block text-sm font-medium mb-1">
+            <label className="block text-sm font-medium text-white mb-1" htmlFor="name">
               Name
             </label>
             <input
-              id="name"
               type="text"
+              id="name"
+              className="w-full px-4 py-2 rounded-lg bg-white/20 backdrop-blur-md border border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/40"
               placeholder="Your full name"
-              className="w-full px-4 py-2 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/40 backdrop-blur-md"
             />
           </div>
 
-          {/* Email Field */}
+          {/* Email */}
           <div>
-            <label htmlFor="email" className="block text-sm font-medium mb-1">
+            <label className="block text-sm font-medium text-white mb-1" htmlFor="email">
               Email
             </label>
             <input
-              id="email"
               type="email"
+              id="email"
+              className="w-full px-4 py-2 rounded-lg bg-white/20 backdrop-blur-md border border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/40"
               placeholder="you@example.com"
-              className="w-full px-4 py-2 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/40 backdrop-blur-md"
             />
           </div>
 
-          {/* Phone Field */}
+          {/* Phone */}
           <div>
-            <label htmlFor="phone" className="block text-sm font-medium mb-1">
+            <label className="block text-sm font-medium text-white mb-1" htmlFor="phone">
               Phone Number
             </label>
             <input
-              id="phone"
               type="tel"
+              id="phone"
+              className="w-full px-4 py-2 rounded-lg bg-white/20 backdrop-blur-md border border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/40"
               placeholder="+1234567890"
-              className="w-full px-4 py-2 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/40 backdrop-blur-md"
             />
           </div>
 
-          {/* Message Field */}
+          {/* Message */}
           <div>
-            <label htmlFor="message" className="block text-sm font-medium mb-1">
+            <label className="block text-sm font-medium text-white mb-1" htmlFor="message">
               Your Opinion
             </label>
             <textarea
               id="message"
               rows={5}
+              className="w-full px-4 py-2 rounded-lg bg-white/20 backdrop-blur-md border border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/40 resize-none"
               placeholder="Write your thoughts here..."
-              className="w-full px-4 py-2 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/40 resize-none backdrop-blur-md"
             />
           </div>
 
-          {/* Submit Button */}
+          {/* Submit */}
           <div className="text-center pt-4">
             <button
               type="submit"
@@ -76,6 +75,7 @@ const ShareUrOpinion: React.FC = () => {
       </div>
     </div>
   );
-};
+}
 
 export default ShareUrOpinion;
+
