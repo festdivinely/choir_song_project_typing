@@ -41,7 +41,7 @@ const AboutPage = () => {
 
         <h2 className="text-2xl font-semibold text-white mt-8 mb-4">Join the Movement</h2>
         <p>
-          Whether you're a solo contributor or part of a church choir, your input helps build a lasting resource for generations of singers to come.
+          Whether you&apos;re a solo contributor or part of a church choir, your input helps build a lasting resource for generations of singers to come.
         </p>
 
       </div>
