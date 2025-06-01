@@ -6,6 +6,7 @@ import chosenlogo from "@/assets/images/chosenlogo.png";
 import highlight from "@/assets/images/highlight.png";
 import rankingGradient from "@/assets/images/rankingGradient.png";
 import bluesky from "@/assets/images/bluesky.png"
+import youthchoir from "@/assets/images/youthchoir.png"
 
 export const images = {
   bg,
@@ -15,5 +16,6 @@ export const images = {
   background2,
   chosenlogo,
   bluishbg,
-  bluesky
+  bluesky,
+  youthchoir
 };

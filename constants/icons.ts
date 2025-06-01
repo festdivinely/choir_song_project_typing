@@ -20,6 +20,10 @@ import hamburger from "@/assets/icons/hamburger.png"
 import cancel from "@/assets/icons/cancel.png"
 import writtinghand from "@/assets/icons/writtinghand.png"
 import eraserhand from "@/assets/icons/eraserhand.png"
+import youtube from "@/assets/icons/youtube.png"
+import facebook from "@/assets/icons/facebook.png"
+import x from "@/assets/icons/x.png"
+import instagram from "@/assets/icons/instagram.png"
 
 export const icons = {
   home,
@@ -43,5 +47,9 @@ export const icons = {
   hamburger,
   cancel,
   writtinghand,
-  eraserhand
+  eraserhand,
+  youtube,
+  facebook,
+  x,
+  instagram
 };

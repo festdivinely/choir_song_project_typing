@@ -50,7 +50,7 @@ function MenuBtns() {
   };
 
   return (
-    <section className="relative flex flex-1 justify-between items-center w-full flex-nowrap gap-x-4 sm:gap-x-10 md:gap-x-20 lg:gap-x-24 text-white">
+    <section className="relative justify-between pl-5 pr-10 flex w-full flex-nowrap gap-x-4 sm:gap-x-10 md:gap-x-20 lg:gap-x-24 text-white">
       {/* Left - Welcome or Logo */}
       <div
         className="w-1/2 min-w-[100px] cursor-pointer flex items-center"
