@@ -2,7 +2,7 @@ import React from 'react';
 
 const Context = () => {
   return (
-    <section className="relative text-white flex items-center justify-center px-4 py-3 w-full mt-[15vh]">
+    <section className="relative text-white flex items-center justify-center px-4 py-3 w-full mt-[5vh]">
       <div className="relative z-10 text-center max-w-10xl w-full">
         {/* Title */}
         <div className="font-bold leading-none whitespace-nowrap overflow-hidden text-ellipsis">
