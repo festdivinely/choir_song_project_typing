@@ -8,6 +8,7 @@ import type { SongWithSections } from '../types/song';
 import { useRouter } from "next/navigation";
 import { useLoadingStore } from '../../lib/songStore';
 
+export const dynamic = 'force-dynamic';
 
 type SectionType = 'solo' | 'chorus' | 'call' | 'response' | 'bridge';
 
@@ -283,7 +284,7 @@ export default function SongForm() {
               <button
                 type="button"
                 onClick={addSection}
-                className="bg-gray-300 px-4 py-2 rounded"
+                className="bg-gray-500 px-4 py-2 rounded"
               >
                 Add Section
               </button>
@@ -305,9 +306,7 @@ export default function SongForm() {
         </div>
 
         {/* RIGHT - PREVIEW SCREEN */}
-        <div className="w-[100vw] h-full overflow-y-auto p-6 bg-gray-100" style={{
-          backgroundImage: `url('/images/form-bg.jpg')`,
-        }}>
+        <div className="w-[100vw] h-full overflow-y-auto p-6 bg-white">
           <div className="max-w-2xl mx-auto whitespace-pre-wrap z-50">
             <h1 className="text-2xl font-bold mb-2">Title: {title}</h1>
             <h2 className="text-lg mb-4">Key: {key}</h2>

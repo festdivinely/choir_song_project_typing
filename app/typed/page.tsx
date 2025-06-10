@@ -3,6 +3,8 @@ import { SongWithSections } from '../types/song'
 import SongBar from '../../components/songBar'
 import { images } from '../../constants/images';
 
+export const dynamic = 'force-dynamic';
+
 export default async function TypePage() {
 
   const songs: SongWithSections[] = await prisma.song.findMany({
