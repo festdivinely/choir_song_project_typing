@@ -3,10 +3,11 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { icons } from "../constants/icons";
 import Image from "next/image";
+import { useLoadingStore } from '../lib/songStore';
 
 function MenuBtns() {
   const router = useRouter();
-
+  const setPageLoading = useLoadingStore((state) => state.setPageLoading);
   const [isMobile, setIsMobile] = useState(false);
   const [isVerySmall, setIsVerySmall] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -69,7 +70,10 @@ function MenuBtns() {
           <div
             key={item.label}
             className="flex items-center gap-1 sm:gap-1.5 cursor-pointer whitespace-nowrap"
-            onClick={() => handleNavClick(item.path)}
+            onClick={() => {
+              setPageLoading(true);
+              handleNavClick(item.path)
+            }}
           >
             <Image
               src={item.icon}
@@ -107,7 +111,11 @@ function MenuBtns() {
               <div
                 key={item.label}
                 className="flex items-center gap-2 mb-4 last:mb-0 cursor-pointer"
-                onClick={() => handleNavClick(item.path)}
+                onClick={() => {
+                  setPageLoading(true);
+                  handleNavClick(item.path)
+                }}
+                
               >
                 <Image
                   src={item.icon}

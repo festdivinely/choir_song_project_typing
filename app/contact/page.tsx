@@ -1,11 +1,28 @@
-import React from 'react';
+"use client"
+
+import React, { useEffect } from 'react'
 import { Mail, Phone, MapPin } from 'lucide-react';
 import { images } from '../../constants/images';
+import { useLoadingStore } from '../../lib/songStore';
 
 const ContactUs = () => {
+  const isPageLoading = useLoadingStore((state) => state.isPageLoading);
+  const setPageLoading = useLoadingStore((state) => state.setPageLoading);
+
+  useEffect(() => {
+    setPageLoading(false);
+    return () => {
+      setPageLoading(null);
+    };
+  }, [setPageLoading]);
+
+  useEffect(() => {
+    console.log('isPageLoading changed:', isPageLoading);
+  }, [isPageLoading]);
+
   return (
     <div className="min-h-screen p-6 bg-cover bg-center"
-    style={{ backgroundImage: `url(${images.bluishbg.src})` }}
+      style={{ backgroundImage: `url(${images.bluishbg.src})` }}
     >
       {/* Hero Section */}
       <section className="text-center mb-12">

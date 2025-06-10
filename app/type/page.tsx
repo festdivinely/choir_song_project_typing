@@ -1,8 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { useSwipeable } from 'react-swipeable'
 import { images } from '../../constants/images'
+import { useRouter } from "next/navigation";
+import { useLoadingStore } from '../../lib/songStore';
+
 
 type SectionType = 'solo' | 'chorus' | 'call' | 'response' | 'bridge'
 
@@ -13,12 +16,55 @@ interface Section {
 }
 
 export default function SongForm() {
+  const router = useRouter();
   const [activeIndex, setActiveIndex] = useState(0)
   const [title, setTitle] = useState('')
   const [key, setKey] = useState('')
-  const [sections, setSections] = useState<Section[]>([
-    { type: 'solo', label: 'SOLO1', lyrics: '' },
-  ])
+  const [isLoading, setIsLoading] = useState(false);
+  const [modalInfo, setModalInfo] = useState<{ message: string; type: 'success' | 'error' | null }>({ message: '', type: null });
+  const [sections, setSections] = useState<Section[]>([{
+    type: 'solo',
+    label: 'SOLO1',
+    lyrics: '',
+  }])
+
+  const isPageLoading = useLoadingStore((state) => state.isPageLoading);
+  const setPageLoading = useLoadingStore((state) => state.setPageLoading);
+
+  const getLabelCounts = (sections: Section[]) => {
+    const counts: Record<string, number> = {}
+    return sections.map((section) => {
+      const type = section.type.toUpperCase()
+      counts[type] = (counts[type] || 0) + 1
+      return `${type}${counts[type]}`
+    })
+  }
+
+  const updateLabels = (sectionsToUpdate: Section[]): Section[] => {
+    const counts: Record<string, number> = {}
+    return sectionsToUpdate.map((section) => {
+      const type = section.type.toUpperCase()
+      counts[type] = (counts[type] || 0) + 1
+      const defaultLabel = `${type}${counts[type]}`
+      // Only auto-update label if user hasn't manually changed it
+      return {
+        ...section,
+        label: defaultLabel
+      }
+    })
+  }
+
+  const recalculateLabels = (sectionsToUpdate: Section[]): Section[] => {
+    const counts: Record<string, number> = {}
+    return sectionsToUpdate.map((section) => {
+      const type = section.type.toUpperCase()
+      counts[type] = (counts[type] || 0) + 1
+      return {
+        ...section,
+        label: `${type}${counts[type]}`
+      }
+    })
+  }
 
   const handleSectionChange = (
     index: number,
@@ -27,38 +73,117 @@ export default function SongForm() {
   ) => {
     const updatedSections = [...sections]
     if (field === 'type') {
-      updatedSections[index][field] = value as SectionType
+      updatedSections[index].type = value as SectionType
+      const relabeled = recalculateLabels(updatedSections)
+      setSections(relabeled)
     } else {
       updatedSections[index][field] = value
+      setSections(updatedSections)
     }
-    setSections(updatedSections)
   }
 
   const addSection = () => {
-    setSections([...sections, { type: 'solo', label: '', lyrics: '' }])
+    const updated: Section[] = [...sections, { type: 'solo', label: '', lyrics: '' }]
+    setSections(recalculateLabels(updated))
   }
 
   const removeSection = (index: number) => {
-    setSections(sections.filter((_, i) => i !== index))
+    const updated = sections.filter((_, i) => i !== index)
+    setSections(recalculateLabels(updated))
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    const res = await fetch('/api/songs', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ title, key, sections }),
-    })
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setIsLoading(true);
+    setModalInfo({ message: '', type: null });
 
-    const data = await res.json()
-    console.log('Submitted:', data)
-  }
+    const payload = [{
+      title,
+      key,
+      sections,
+    }];
+
+    try {
+      const response = await fetch('/api/songs', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        let errorMessage = 'Failed to update song';
+
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.error || errorMessage;
+        } catch {
+          try {
+            const text = await response.text();
+            errorMessage = text || errorMessage;
+          } catch (textError) {
+            console.error('Could not parse error message:', textError);
+          }
+        }
+
+        console.error('Server response:', errorMessage);
+        setModalInfo({
+          message: errorMessage,
+          type: "error",
+        });
+        throw new Error(errorMessage);
+      }
+
+
+      const data = await response.json();
+      console.log('Submitted:', data);
+
+      setModalInfo({ message: 'Song submitted successfully!', type: 'success' });
+
+      setTitle('');
+      setKey('');
+      setSections([{ type: 'solo', label: 'SOLO1', lyrics: '' }]);
+      setActiveIndex(0);
+
+      router.push('/type');
+    } catch (error: any) {
+      setModalInfo({ message: error.message || 'Something went wrong', type: 'error' });
+      console.error('Submission error:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+
 
   const handlers = useSwipeable({
     onSwipedLeft: () => setActiveIndex((prev) => Math.min(prev + 1, 1)),
     onSwipedRight: () => setActiveIndex((prev) => Math.max(prev - 1, 0)),
     trackMouse: true,
   })
+
+
+  useEffect(() => {
+    if (modalInfo.type) {
+      const timer = setTimeout(() => {
+        setModalInfo({ message: '', type: null });
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [modalInfo]);
+
+
+  useEffect(() => {
+    setPageLoading(false);
+    return () => {
+      setPageLoading(null);
+    };
+  }, [setPageLoading]);
+  
+  useEffect(() => {
+    console.log('isPageLoading changed:', isPageLoading);
+  }, [isPageLoading]);
 
   return (
     <div {...handlers} className="w-screen h-screen overflow-hidden">
@@ -68,10 +193,10 @@ export default function SongForm() {
       >
         {/* LEFT - FORM SCREEN */}
         <div className="w-[100vw] h-full overflow-y-auto p-6 bg-white" style={{
-            backgroundImage: `url(${images.bluishbg.src})`,
-            backgroundSize: 'cover',
-            backgroundRepeat: 'no-repeat',
-            backgroundPosition: 'center',
+          backgroundImage: `url(${images.bluishbg.src})`,
+          backgroundSize: 'cover',
+          backgroundRepeat: 'no-repeat',
+          backgroundPosition: 'center',
         }}>
           <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl mx-auto bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-6 shadow-lg">
             <div>
@@ -98,9 +223,7 @@ export default function SongForm() {
                 <div className="flex justify-between items-center gap-2">
                   <select
                     value={section.type}
-                    onChange={(e) =>
-                      handleSectionChange(index, 'type', e.target.value)
-                    }
+                    onChange={(e) => handleSectionChange(index, 'type', e.target.value)}
                     className="border"
                   >
                     <option className='bg-blue-400' value="solo">Solo</option>
@@ -123,17 +246,13 @@ export default function SongForm() {
                   type="text"
                   value={section.label}
                   placeholder="Label (e.g., SOLO1)"
-                  onChange={(e) =>
-                    handleSectionChange(index, 'label', e.target.value)
-                  }
+                  onChange={(e) => handleSectionChange(index, 'label', e.target.value)}
                   className="p-2 w-full rounded-l border"
                 />
 
                 <textarea
                   value={section.lyrics}
-                  onChange={(e) =>
-                    handleSectionChange(index, 'lyrics', e.target.value)
-                  }
+                  onChange={(e) => handleSectionChange(index, 'lyrics', e.target.value)}
                   placeholder="Lyrics"
                   className="p-2 w-full resize-y rounded-lg border"
                   rows={3}
@@ -157,7 +276,6 @@ export default function SongForm() {
                 Preview
               </button>
             </div>
-
             <button
               type="submit"
               className="bg-blue-700 text-white w-full py-2 rounded"
@@ -171,7 +289,7 @@ export default function SongForm() {
         <div className="w-[100vw] h-full overflow-y-auto p-6 bg-gray-100" style={{
           backgroundImage: `url('/images/form-bg.jpg')`,
         }}>
-          <div className="max-w-2xl mx-auto whitespace-pre-wrap">
+          <div className="max-w-2xl mx-auto whitespace-pre-wrap z-50">
             <h1 className="text-2xl font-bold mb-2">Title: {title}</h1>
             <h2 className="text-lg mb-4">Key: {key}</h2>
             {sections.map((section, index) => (
@@ -195,6 +313,22 @@ export default function SongForm() {
           </div>
         </div>
       </div>
+
+      {/* Spinner Overlay */}
+      {isLoading && (
+        <div className="fixed inset-0 bg-transparent  z-50 flex items-center justify-center">
+          <div className="w-12 h-12 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+        </div>
+      )}
+
+      {/* Modal Info */}
+      {modalInfo.type && (
+        <div className={`fixed bottom-6 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded shadow-lg text-white z-50
+    ${modalInfo.type === 'success' ? 'bg-green-600' : 'bg-red-600'}`}>
+          {modalInfo.message}
+        </div>
+      )}
+
     </div>
   )
 }
