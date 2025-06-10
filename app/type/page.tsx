@@ -129,7 +129,7 @@ export default function SongForm() {
       const apiError = error instanceof Error
         ? { message: error.message }
         : { message: 'Something went wrong' };
-      
+
       setModalInfo({ message: apiError.message, type: 'error' });
       console.error('Submission error:', error);
     } finally {
@@ -162,7 +162,7 @@ export default function SongForm() {
       setPageLoading(null);
     };
   }, [setPageLoading]);
-  
+
   useEffect(() => {
     console.log('isPageLoading changed:', isPageLoading);
   }, [isPageLoading]);
@@ -253,9 +253,14 @@ export default function SongForm() {
               <button
                 type="button"
                 onClick={() => setActiveIndex(1)}
-                className="bg-blue-500 text-white px-4 py-2 rounded"
+                className="bg-blue-500 text-white w-fit h-fit rounded"
               >
-                Preview
+                 <div className='px-4 py-2 flex justify-center items-center gap-1.5'>
+                  <div>
+                    Preview
+                  </div>
+                  <div>👉</div>
+                </div>
               </button>
             </div>
             <button
@@ -268,8 +273,13 @@ export default function SongForm() {
         </div>
 
         {/* RIGHT - PREVIEW SCREEN */}
-        <div className="w-[100vw] h-full overflow-y-auto p-6 bg-white">
-          <div className="max-w-2xl mx-auto whitespace-pre-wrap">
+        <div className="w-[100vw] h-full overflow-y-auto p-6 bg-white" style={{
+          backgroundImage: `url(${images.bluishbg.src})`,
+          backgroundSize: 'cover',
+          backgroundRepeat: 'no-repeat',
+          backgroundPosition: 'center',
+        }}>
+          <div className="max-w-2xl mx-auto whitespace-pre-wrap text-white">
             <h1 className="text-2xl font-bold mb-2">Title: {title}</h1>
             <h2 className="text-lg mb-4">Key: {key}</h2>
             {sections.map((section, index) => (
@@ -282,13 +292,18 @@ export default function SongForm() {
             ))}
           </div>
 
-          <div className="flex justify-center mt-6">
+          <div className="flex max-w-2xl mx-auto whitespace-pre-wrap mt-6">
             <button
               type="button"
               onClick={() => setActiveIndex(0)}
-              className="bg-blue-500 text-white px-4 py-2 rounded"
+              className="bg-blue-500 text-white w-fit h-fit rounded"
             >
-              Back to Edit
+              <div className='px-4 py-2 flex justify-center items-center text-white gap-1.5'>
+                <div>👈</div>
+                <div>
+                  back to edit
+                </div>
+              </div>
             </button>
           </div>
         </div>
