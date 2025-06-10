@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '../../../../lib/prisma';
 
 export const dynamic = 'force-dynamic';
@@ -9,12 +9,9 @@ type SectionInput = {
   lyrics: string;
 };
 
-export async function PUT(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
+export async function PUT(req: NextRequest) {
   try {
-    const songId = params.id;
+    const songId = req.nextUrl.pathname.split('/').pop(); // OR use `req.nextUrl.searchParams.get('id')` if passed as query param
     const body = await req.json();
     const { title, key, sections } = body;
 
@@ -28,7 +25,6 @@ export async function PUT(
         title,
         key,
         sections: {
-          // Only delete sections belonging to this song
           deleteMany: { songId },
           create: sections.map((section: SectionInput) => ({
             type: section.type,
@@ -49,18 +45,14 @@ export async function PUT(
   }
 }
 
-
-export async function DELETE(
-  req: Request, { params }: { params: { id: string } }
-) {
+export async function DELETE(req: NextRequest) {
   try {
-    const songId = params.id;
+    const songId = req.nextUrl.pathname.split('/').pop();
 
     if (!songId) {
       return new NextResponse('Song ID is required', { status: 400 });
     }
 
-    // Prisma will automatically delete related sections due to onDelete: Cascade
     await prisma.song.delete({
       where: { id: songId },
     });
