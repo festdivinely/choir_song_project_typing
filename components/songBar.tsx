@@ -21,7 +21,6 @@ export default function SongBar({ song }: { song: SongWithSections }) {
     type: 'success' | 'error' | null
   }>({ message: '', type: null })
 
-  const [error, setError] = useState('');
 
   // ✅ Stable selectors from Zustand stores
   const addSong = useSelectionStore((state) => state.addSong)
@@ -164,15 +163,6 @@ export default function SongBar({ song }: { song: SongWithSections }) {
     return (
       <div className="fixed inset-0 bg-transparent  z-50 flex items-center justify-center">
         <div className="w-12 h-12 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
-      </div>
-    )
-  }
-
-
-  if (error) {
-    return (
-      <div className="fixed bottom-4 left-1/2 -translate-x-1/2 bg-red-500 text-white px-4 py-2 rounded z-50">
-        {error}
       </div>
     )
   }

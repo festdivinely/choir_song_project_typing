@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useSwipeable } from 'react-swipeable'
 import { images } from '../../constants/images'
 import { useRouter } from "next/navigation";
@@ -31,28 +31,6 @@ export default function SongForm() {
   const isPageLoading = useLoadingStore((state) => state.isPageLoading);
   const setPageLoading = useLoadingStore((state) => state.setPageLoading);
 
-  const getLabelCounts = (sections: Section[]) => {
-    const counts: Record<string, number> = {}
-    return sections.map((section) => {
-      const type = section.type.toUpperCase()
-      counts[type] = (counts[type] || 0) + 1
-      return `${type}${counts[type]}`
-    })
-  }
-
-  const updateLabels = (sectionsToUpdate: Section[]): Section[] => {
-    const counts: Record<string, number> = {}
-    return sectionsToUpdate.map((section) => {
-      const type = section.type.toUpperCase()
-      counts[type] = (counts[type] || 0) + 1
-      const defaultLabel = `${type}${counts[type]}`
-      // Only auto-update label if user hasn't manually changed it
-      return {
-        ...section,
-        label: defaultLabel
-      }
-    })
-  }
 
   const recalculateLabels = (sectionsToUpdate: Section[]): Section[] => {
     const counts: Record<string, number> = {}
@@ -147,8 +125,12 @@ export default function SongForm() {
       setActiveIndex(0);
 
       router.push('/type');
-    } catch (error: any) {
-      setModalInfo({ message: error.message || 'Something went wrong', type: 'error' });
+    } catch (error: unknown) {
+      const apiError = error instanceof Error
+        ? { message: error.message }
+        : { message: 'Something went wrong' };
+      
+      setModalInfo({ message: apiError.message, type: 'error' });
       console.error('Submission error:', error);
     } finally {
       setIsLoading(false);

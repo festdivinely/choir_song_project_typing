@@ -3,6 +3,12 @@ import { prisma } from '../../../../lib/prisma';
 
 export const dynamic = 'force-dynamic';
 
+type SectionInput = {
+  type: string;
+  label: string;
+  lyrics: string;
+};
+
 export async function PUT(
   req: Request,
   { params }: { params: { id: string } }
@@ -24,7 +30,7 @@ export async function PUT(
         sections: {
           // Only delete sections belonging to this song
           deleteMany: { songId },
-          create: sections.map((section: any) => ({
+          create: sections.map((section: SectionInput) => ({
             type: section.type,
             label: section.label,
             lyrics: section.lyrics,

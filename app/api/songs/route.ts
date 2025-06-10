@@ -27,7 +27,7 @@ export async function POST(req: Request) {
           title,
           key,
           sections: {
-            create: sections.map((section: any) => ({
+            create: sections.map((section: SectionInput) => ({
               type: section.type,
               label: section.label,
               lyrics: section.lyrics,

@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useSwipeable } from 'react-swipeable';
 import { images } from '../../constants/images';
 import { useSongStore } from '../../lib/songStore';
@@ -101,7 +101,7 @@ export default function SongForm() {
     setModalInfo({ message: '', type: null });
 
     if (!currentSong?.id) {
-      let errorMessage = 'Failed to update song';
+      const errorMessage = 'Failed to update song';
 
       setTimeout(() => {
         setIsLoading(false);
@@ -166,12 +166,13 @@ export default function SongForm() {
 
       // ✅ Optionally redirect
       router.push('/edit');
-    } catch (error: any) {
-      setModalInfo({ message: error.message || 'Something went wrong', type: 'error' });
+    } catch (error: unknown) {
+      const apiError = error instanceof Error
+        ? { message: error.message }
+        : { message: 'Something went wrong' };
+      
+      setModalInfo({ message: apiError.message, type: 'error' });
       console.error('Update error:', error);
-      if (error instanceof Error) {
-        console.error('Error message:', error.message);
-      }
     } finally {
       setIsLoading(false);
     }
