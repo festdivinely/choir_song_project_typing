@@ -7,6 +7,7 @@ import { useSongStore } from '../../lib/songStore';
 import type { SongWithSections } from '../types/song';
 import { useRouter } from "next/navigation";
 import { useLoadingStore } from '../../lib/songStore';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export const dynamic = 'force-dynamic';
 
@@ -17,6 +18,51 @@ interface Section {
   label: string;
   lyrics: string;
 }
+
+interface ModalMessageProps {
+  message: string;
+  onConfirm: () => void;
+  onCancel: () => void;
+}
+
+
+
+const ModalMessage: React.FC<ModalMessageProps> = ({ message, onConfirm, onCancel }) => {
+  return (
+    <AnimatePresence>
+      <motion.div
+        className="fixed inset-0 z-50 flex items-center justify-center bg-transparent bg-opacity-30"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+      >
+        <motion.div
+          className="bg-[#c1d5ee] text-[#4f4f50] rounded-2xl p-6 text-center mx-5 max-w-sm w-full shadow-[6px_6px_13px_#656566,_-5px_-5px_13px_#656566]"
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0.8, opacity: 0 }}
+        >
+          <div className="text-lg font-semibold mb-4">{message}</div>
+          <div className="flex justify-center gap-4 mt-4">
+            <button
+              onClick={onConfirm}
+              className="bg-green-400 text-white px-4 py-2 rounded hover:bg-green-400"
+            >
+              Yes
+            </button>
+            <button
+              onClick={onCancel}
+              className="bg-red-400 text-gray-800 px-4 py-2 rounded hover:bg-red-400"
+            >
+              No
+            </button>
+          </div>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
+  );
+};
+
 
 export default function SongForm() {
   const router = useRouter();
@@ -29,6 +75,36 @@ export default function SongForm() {
   const [modalInfo, setModalInfo] = useState<{ message: string; type: 'success' | 'error' | null }>({ message: '', type: null });
   const isPageLoading = useLoadingStore((state) => state.isPageLoading);
   const setPageLoading = useLoadingStore((state) => state.setPageLoading);
+
+  const [confirmation, setConfirmation] = useState(false)
+  const [pendingSubmit, setPendingSubmit] = useState(false)
+
+
+  const confirmSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault(); // ✅ Prevent the default form submission
+    setPendingSubmit(true);
+    setConfirmation(true);
+  };
+
+
+  const handleConfirmSubmit = () => {
+    if (!pendingSubmit) return;
+
+    // Create a mock event object if needed for handleSubmit
+    const mockEvent = { preventDefault: () => { } } as React.FormEvent<HTMLFormElement>;
+
+    if (pendingSubmit === true) {
+      handleSubmit(mockEvent);
+    }
+
+    setConfirmation(false);
+    setPendingSubmit(false);
+  }
+
+  const handleCancelSubmit = () => {
+    setConfirmation(false);
+    setPendingSubmit(false);
+  }
 
 
   useEffect(() => {
@@ -206,164 +282,175 @@ export default function SongForm() {
   }, [isPageLoading]);
 
   return (
-    <div {...handlers} className="w-screen h-screen overflow-hidden">
-      <div
-        className="flex transition-transform duration-500 ease-in-out w-[200vw] h-full"
-        style={{ transform: `translateX(-${activeIndex * 100}vw)` }}
-      >
-        {/* LEFT - FORM SCREEN */}
-        <div className="w-[100vw] h-full overflow-y-auto p-6 bg-white" style={{
-          backgroundImage: `url(${images.bluishbg.src})`,
-          backgroundSize: 'cover',
-          backgroundRepeat: 'no-repeat',
-          backgroundPosition: 'center',
-        }}>
-          <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl mx-auto bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-6 shadow-lg">
-            <div>
-              <input
-                type="text"
-                value={title}
-                placeholder="Song Title"
-                onChange={(e) => setTitle(e.target.value)}
-                className="p-2 w-full rounded-lg bg-white/5 backdrop-blur-md border border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/40"
-              />
-            </div>
-            <div>
-              <input
-                type="text"
-                value={key}
-                placeholder="Key (e.g., G, C)"
-                onChange={(e) => setKey(e.target.value)}
-                className="p-2 w-full rounded-lg bg-white/5 backdrop-blur-md border border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/40"
-              />
-            </div>
+    <>
 
-            {sections.map((section, index) => (
-              <div key={index} className="space-y-2 p-4 rounded-lg bg-white/5 backdrop-blur-md border border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/40">
-                <div className="flex justify-between items-center gap-2">
-                  <select
-                    value={section.type}
-                    onChange={(e) => handleSectionChange(index, 'type', e.target.value)}
-                    className="border"
-                  >
-                    <option className='bg-blue-400' value="solo">Solo</option>
-                    <option value="chorus" className='bg-blue-400'>Chorus</option>
-                    <option value="call" className='bg-blue-400'>Call</option>
-                    <option value="response" className='bg-blue-400'>Response</option>
-                    <option value="bridge" className='bg-blue-400'>Bridge</option>
-                  </select>
+      {confirmation && (
+        <ModalMessage
+          message="Are you ready to submit?"
+          onConfirm={handleConfirmSubmit}
+          onCancel={handleCancelSubmit}
+        />
+      )}
 
-                  <button
-                    type="button"
-                    onClick={() => removeSection(index)}
-                    className="text-red-600 text-sm font-bold"
-                  >
-                    Remove
-                  </button>
-                </div>
-
+      <div {...handlers} className="w-screen h-screen overflow-hidden">
+        <div
+          className="flex transition-transform duration-500 ease-in-out w-[200vw] h-full"
+          style={{ transform: `translateX(-${activeIndex * 100}vw)` }}
+        >
+          {/* LEFT - FORM SCREEN */}
+          <div className="w-[100vw] h-full overflow-y-auto p-6 bg-white" style={{
+            backgroundImage: `url(${images.bluishbg.src})`,
+            backgroundSize: 'cover',
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'center',
+          }}>
+            <form onSubmit={confirmSubmit} className="space-y-6 max-w-2xl mx-auto bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-6 shadow-lg">
+              <div>
                 <input
                   type="text"
-                  value={section.label}
-                  placeholder="Label (e.g., SOLO1)"
-                  onChange={(e) => handleSectionChange(index, 'label', e.target.value)}
-                  className="p-2 w-full rounded-l border"
-                />
-
-                <textarea
-                  value={section.lyrics}
-                  onChange={(e) => handleSectionChange(index, 'lyrics', e.target.value)}
-                  placeholder="Lyrics"
-                  className="p-2 w-full resize-y rounded-lg border"
-                  rows={3}
+                  value={title}
+                  placeholder="Song Title"
+                  onChange={(e) => setTitle(e.target.value)}
+                  className="p-2 w-full rounded-lg bg-white/5 backdrop-blur-md border border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/40"
                 />
               </div>
-            ))}
+              <div>
+                <input
+                  type="text"
+                  value={key}
+                  placeholder="Key (e.g., G, C)"
+                  onChange={(e) => setKey(e.target.value)}
+                  className="p-2 w-full rounded-lg bg-white/5 backdrop-blur-md border border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/40"
+                />
+              </div>
 
-            <div className="flex justify-center gap-4">
-              <button
-                type="button"
-                onClick={addSection}
-                className="bg-gray-500 px-4 py-2 rounded"
-              >
-                Add Section
-              </button>
-              <button
-                type="button"
-                onClick={() => setActiveIndex(1)}
-                className="bg-blue-500 text-white rounded w-fit h-fit"
-              >
-                <div className='px-4 py-2 flex justify-center items-center gap-1.5'>
-                  <div>
-                    Preview
+              {sections.map((section, index) => (
+                <div key={index} className="space-y-2 p-4 rounded-lg bg-white/5 backdrop-blur-md border border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/40">
+                  <div className="flex justify-between items-center gap-2">
+                    <select
+                      value={section.type}
+                      onChange={(e) => handleSectionChange(index, 'type', e.target.value)}
+                      className="border"
+                    >
+                      <option className='bg-blue-400' value="solo">Solo</option>
+                      <option value="chorus" className='bg-blue-400'>Chorus</option>
+                      <option value="call" className='bg-blue-400'>Call</option>
+                      <option value="response" className='bg-blue-400'>Response</option>
+                      <option value="bridge" className='bg-blue-400'>Bridge</option>
+                    </select>
+
+                    <button
+                      type="button"
+                      onClick={() => removeSection(index)}
+                      className="text-red-600 text-sm font-bold"
+                    >
+                      Remove
+                    </button>
                   </div>
-                  <div>👉</div>
+
+                  <input
+                    type="text"
+                    value={section.label}
+                    placeholder="Label (e.g., SOLO1)"
+                    onChange={(e) => handleSectionChange(index, 'label', e.target.value)}
+                    className="p-2 w-full rounded-l border"
+                  />
+
+                  <textarea
+                    value={section.lyrics}
+                    onChange={(e) => handleSectionChange(index, 'lyrics', e.target.value)}
+                    placeholder="Lyrics"
+                    className="p-2 w-full resize-y rounded-lg border"
+                    rows={3}
+                  />
+                </div>
+              ))}
+
+              <div className="flex justify-center gap-4">
+                <button
+                  type="button"
+                  onClick={addSection}
+                  className="bg-gray-500 px-4 py-2 rounded"
+                >
+                  Add Section
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveIndex(1)}
+                  className="bg-blue-500 text-white rounded w-fit h-fit"
+                >
+                  <div className='px-4 py-2 flex justify-center items-center gap-1.5'>
+                    <div>
+                      Preview
+                    </div>
+                    <div>👉</div>
+                  </div>
+                </button>
+              </div>
+              <button
+                type="submit"
+                className="bg-blue-700 text-white w-full py-2 rounded"
+              >
+                Update Song
+              </button>
+            </form>
+          </div>
+
+          {/* RIGHT - PREVIEW SCREEN */}
+          <div className="w-[100vw] h-full overflow-y-auto p-6 bg-white" style={{
+            backgroundImage: `url(${images.bluishbg.src})`,
+            backgroundSize: 'cover',
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'center',
+          }}>
+            <div className="max-w-2xl mx-auto whitespace-pre-wrap text-white">
+              <h1 className="text-2xl font-bold mb-2">Title: {title}</h1>
+              <h2 className="text-lg mb-4">Key: {key}</h2>
+              {sections.map((section, index) => (
+                <div key={index} className="mb-4">
+                  <h3 className="font-semibold capitalize">
+                    {section.type} {section.label && `(${section.label})`}:
+                  </h3>
+                  <p>{section.lyrics}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex max-w-2xl mx-auto whitespace-pre-wrap mt-6">
+              <button
+                type="button"
+                onClick={() => setActiveIndex(0)}
+                className="bg-blue-500 text-white w-fit h-fit rounded"
+              >
+                <div className='px-4 py-2 flex justify-center items-center text-white gap-1.5'>
+                  <div>👈</div>
+                  <div>
+                    back to edit
+                  </div>
                 </div>
               </button>
             </div>
-            <button
-              type="submit"
-              className="bg-blue-700 text-white w-full py-2 rounded"
-            >
-              Update Song
-            </button>
-          </form>
-        </div>
-
-        {/* RIGHT - PREVIEW SCREEN */}
-        <div className="w-[100vw] h-full overflow-y-auto p-6 bg-white" style={{
-          backgroundImage: `url(${images.bluishbg.src})`,
-          backgroundSize: 'cover',
-          backgroundRepeat: 'no-repeat',
-          backgroundPosition: 'center',
-        }}>
-          <div className="max-w-2xl mx-auto whitespace-pre-wrap text-white">
-            <h1 className="text-2xl font-bold mb-2">Title: {title}</h1>
-            <h2 className="text-lg mb-4">Key: {key}</h2>
-            {sections.map((section, index) => (
-              <div key={index} className="mb-4">
-                <h3 className="font-semibold capitalize">
-                  {section.type} {section.label && `(${section.label})`}:
-                </h3>
-                <p>{section.lyrics}</p>
-              </div>
-            ))}
-          </div>
-
-          <div className="flex max-w-2xl mx-auto whitespace-pre-wrap mt-6">
-            <button
-              type="button"
-              onClick={() => setActiveIndex(0)}
-              className="bg-blue-500 text-white w-fit h-fit rounded"
-            >
-              <div className='px-4 py-2 flex justify-center items-center text-white gap-1.5'>
-                <div>👈</div>
-                <div>
-                  back to edit
-                </div>
-              </div>
-            </button>
           </div>
         </div>
-      </div>
 
 
-      {/* Spinner Overlay */}
-      {isLoading && (
-        <div className="fixed inset-0 bg-transparent  z-50 flex items-center justify-center">
-          <div className="w-12 h-12 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
-        </div>
-      )}
+        {/* Spinner Overlay */}
+        {isLoading && (
+          <div className="fixed inset-0 bg-transparent  z-50 flex items-center justify-center">
+            <div className="w-12 h-12 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+          </div>
+        )}
 
-      {/* Modal Info */}
-      {modalInfo.type && (
-        <div className={`fixed w-fit whitespace-nowrap bottom-6 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded shadow-lg text-white z-50
+        {/* Modal Info */}
+        {modalInfo.type && (
+          <div className={`fixed w-fit whitespace-nowrap bottom-6 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded shadow-lg text-white z-50
     ${modalInfo.type === 'success' ? 'bg-green-600' : 'bg-red-600'}`}>
-          {modalInfo.message}
-        </div>
-      )}
+            {modalInfo.message}
+          </div>
+        )}
 
 
-    </div>
+      </div>
+    </>
   )
 }

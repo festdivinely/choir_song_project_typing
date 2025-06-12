@@ -8,6 +8,51 @@ import type { SongWithSections } from '../app/types/song'
 import { useSongStore } from '../lib/songStore'
 import { useLoadingStore } from '../lib/songStore'
 import { useSelectionStore } from '../lib/songStore'
+import { motion, AnimatePresence } from 'framer-motion';
+
+
+interface ModalMessageProps {
+  message: string;
+  onConfirm: () => void;
+  onCancel: () => void;
+}
+
+
+const ModalMessage: React.FC<ModalMessageProps> = ({ message, onConfirm, onCancel }) => {
+  return (
+    <AnimatePresence>
+      <motion.div
+        className="fixed inset-0 z-50 flex items-center justify-center bg-transparent bg-opacity-30"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+      >
+        <motion.div
+          className="bg-[#c1d5ee] text-[#4f4f50] rounded-2xl p-6 text-center mx-5 max-w-sm w-full shadow-[6px_6px_13px_#656566,_-5px_-5px_13px_#656566]"
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0.8, opacity: 0 }}
+        >
+          <div className="text-lg font-semibold mb-4">{message}</div>
+          <div className="flex justify-center gap-4 mt-4">
+            <button
+              onClick={onConfirm}
+              className="bg-green-400 text-white px-4 py-2 rounded hover:bg-green-400"
+            >
+              Yes
+            </button>
+            <button
+              onClick={onCancel}
+              className="bg-red-400 text-gray-800 px-4 py-2 rounded hover:bg-red-400"
+            >
+              No
+            </button>
+          </div>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
+  );
+};
 
 
 export default function SongBar({ song }: { song: SongWithSections }) {
@@ -21,7 +66,6 @@ export default function SongBar({ song }: { song: SongWithSections }) {
     type: 'success' | 'error' | null
   }>({ message: '', type: null })
 
-
   // ✅ Stable selectors from Zustand stores
   const addSong = useSelectionStore((state) => state.addSong)
   const removeSong = useSelectionStore((state) => state.removeSong)
@@ -34,6 +78,23 @@ export default function SongBar({ song }: { song: SongWithSections }) {
 
   const isPageLoading = useLoadingStore((state) => state.isPageLoading)
   const setPageLoading = useLoadingStore((state) => state.setPageLoading)
+
+  const [confirmation, setConfirmation] = useState(false)
+  const [pendingDelete, setPendingDelete] = useState<{ type: 'single' | 'bulk'; songId?: string } | null>(null)
+
+
+  // Individual delete (open modal first)
+  const confirmSingleDelete = (id: string) => {
+    setPendingDelete({ type: 'single', songId: id });
+    setConfirmation(true);
+  }
+
+  // Bulk delete (open modal first)
+  const confirmBulkDelete = () => {
+    setPendingDelete({ type: 'bulk' });
+    setConfirmation(true);
+  }
+
 
   // Update the handleDelete function in SongBar
   // Handle individual song deletion
@@ -71,13 +132,32 @@ export default function SongBar({ song }: { song: SongWithSections }) {
     }
   }
 
+  const handleConfirmDelete = () => {
+    if (!pendingDelete) return;
+
+    if (pendingDelete.type === 'single' && pendingDelete.songId) {
+      handleDelete(pendingDelete.songId);
+    } else if (pendingDelete.type === 'bulk') {
+      handleBulkDelete();
+    }
+
+    setConfirmation(false);
+    setPendingDelete(null);
+  }
+
+  const handleCancelDelete = () => {
+    setConfirmation(false);
+    setPendingDelete(null);
+  }
+
+
   const handleBulkDelete = async () => {
     if (selectedSongIds.length === 0) return;
-  
+
     setIsDeleting(true);
     setNotification({ message: '', type: null });
     console.log('Attempting to delete:', selectedSongIds); // Debug log
-  
+
     try {
       const response = await fetch('/api/songs/bulk', {
         method: 'DELETE',
@@ -86,23 +166,23 @@ export default function SongBar({ song }: { song: SongWithSections }) {
         },
         body: JSON.stringify({ ids: selectedSongIds }),
       });
-  
+
       console.log('Delete response status:', response.status); // Debug log
-  
+
       if (!response.ok) {
         const errorText = await response.text();
         console.error('Delete failed:', errorText); // Debug log
         throw new Error(errorText || 'Delete failed');
       }
-  
+
       const data = await response.json();
       console.log('Delete success:', data); // Debug log
-      
+
       setNotification({
         message: data.message || `${selectedSongIds.length} song(s) deleted!`,
         type: 'success'
       });
-      
+
       resetSelection();
       setTimeout(() => router.refresh(), 1000);
     } catch (err) {
@@ -187,12 +267,23 @@ export default function SongBar({ song }: { song: SongWithSections }) {
 
   return (
     <>
-      {/* Top Delete Icon Container */}
+
+      {confirmation && (
+        <ModalMessage
+          message="Are you sure you want to delete?"
+          onConfirm={handleConfirmDelete}
+          onCancel={handleCancelDelete}
+        />
+      )}
+
+      {/* Bulk Delete Icon */}
       {count > 0 && (
-        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-fit text-red-700 rounded-xl flex flex-col gap-0.5 items-center justify-center" onClick={(e) => {
-          e.stopPropagation();
-          handleBulkDelete();
-        }}
+        <div
+          className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-fit text-red-700 rounded-xl flex flex-col gap-0.5 items-center justify-center"
+          onClick={(e) => {
+            e.stopPropagation();
+            confirmBulkDelete();
+          }}
         >
           <div>{count} x</div>
           <FaTrashAlt className="text-4xl" />
@@ -237,13 +328,14 @@ export default function SongBar({ song }: { song: SongWithSections }) {
         </div>
 
         {/* Individual delete button */}
+        {/* Individual delete button */}
         <div className="w-fit h-fit">
           <button
             type="button"
             className="absolute right-2 top-6 text-red-600 hover:text-red-800"
             onClick={(e) => {
-              e.stopPropagation()
-              handleDelete(song.id)
+              e.stopPropagation();
+              confirmSingleDelete(song.id);
             }}
           >
             <FaTrashAlt />
