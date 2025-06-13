@@ -3,7 +3,8 @@ import { SongWithSections } from '../types/song'
 import SongBar from '../../components/songBar'
 import { images } from '../../constants/images';
 
-export const dynamic = 'force-dynamic';
+export const dynamic = 'force-dynamic'
+export const fetchCache = 'force-no-store'
 
 export default async function TypePage() {
 

@@ -7,7 +7,6 @@ import { useRouter } from "next/navigation";
 import { useLoadingStore } from '../../lib/songStore';
 import { motion, AnimatePresence } from 'framer-motion';
 
-
 type SectionType = 'solo' | 'chorus' | 'call' | 'response' | 'bridge'
 
 interface Section {
@@ -21,8 +20,6 @@ interface ModalMessageProps {
   onConfirm: () => void;
   onCancel: () => void;
 }
-
-
 
 const ModalMessage: React.FC<ModalMessageProps> = ({ message, onConfirm, onCancel }) => {
   return (
@@ -60,8 +57,6 @@ const ModalMessage: React.FC<ModalMessageProps> = ({ message, onConfirm, onCance
   );
 };
 
-
-
 export default function SongForm() {
   const router = useRouter();
   const [activeIndex, setActiveIndex] = useState(0)
@@ -75,12 +70,24 @@ export default function SongForm() {
     lyrics: '',
   }])
 
+  const [titleError, setTitleError] = useState(false);
+  const [keyError, setKeyError] = useState(false);
+  const [lyricsErrors, setLyricsErrors] = useState<boolean[]>([]);
+
+
   const isPageLoading = useLoadingStore((state) => state.isPageLoading);
   const setPageLoading = useLoadingStore((state) => state.setPageLoading);
 
   const [confirmation, setConfirmation] = useState(false)
   const [pendingSubmit, setPendingSubmit] = useState(false)
 
+  const trimmedTitle = title.trim();
+  const trimmedKey = key.trim();
+
+  const hasSolo = sections.some(section => section.type === 'solo');
+  const hasChorus = sections.some(section => section.type === 'chorus');
+  const isKeyValid = trimmedKey.length <= 10;
+  const isLyricsLengthValid = sections.every(section => section.lyrics.trim().length >= 1);
 
   const recalculateLabels = (sectionsToUpdate: Section[]): Section[] => {
     const counts: Record<string, number> = {}
@@ -94,12 +101,19 @@ export default function SongForm() {
     })
   }
 
+  useEffect(() => {
+    if (key.trim().length > 10) {
+      setKeyError(true);
+    } else {
+      setKeyError(false);
+    }
+  }, [key]);
+
   const confirmSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault(); // ✅ Prevent the default form submission
     setPendingSubmit(true);
     setConfirmation(true);
   };
-
 
   const handleConfirmSubmit = () => {
     if (!pendingSubmit) return;
@@ -107,7 +121,46 @@ export default function SongForm() {
     // Create a mock event object if needed for handleSubmit
     const mockEvent = { preventDefault: () => { } } as React.FormEvent<HTMLFormElement>;
 
-    if (pendingSubmit === true) {
+    // Validation order: from basic to complex
+    if (!trimmedTitle) {
+      setTitleError(true);
+      setTimeout(() => setTitleError(false), 500);
+      setModalInfo({ message: 'Please fill in the title.', type: 'error' });
+      return;
+    }
+
+    if (!trimmedKey) {
+      setKeyError(true);
+      setTimeout(() => setKeyError(false), 500);
+      setModalInfo({ message: 'Please fill in the key.', type: 'error' });
+      return;
+    }
+
+    const updatedErrors = sections.map(section => section.lyrics.trim().length < 1);
+    if (updatedErrors.includes(true)) {
+      setLyricsErrors(updatedErrors);
+      setTimeout(() => setLyricsErrors(new Array(sections.length).fill(false)), 500);
+      setModalInfo({ message: 'Each section\'s lyrics must be filled.', type: 'error' });
+      return;
+    }
+
+    if (!isKeyValid) {
+      setKeyError(true);
+      setTimeout(() => setKeyError(false), 500);
+      setModalInfo({ message: 'Key must no exceed 10 charaters.', type: 'error' });
+      return;
+    }
+
+    else if (!isLyricsLengthValid) {
+      setKeyError(true);
+      setTimeout(() => setKeyError(false), 500);
+      setModalInfo({ message: 'Lyrics must be above ten characters.', type: 'error' });
+      return;
+    }
+
+    if (!hasSolo || !hasChorus) {
+      setModalInfo({ message: 'Song unacceptable: Type a minimum of 1 solo and 1 chorus.', type: 'error' });
+    } else {
       handleSubmit(mockEvent);
     }
 
@@ -213,14 +266,11 @@ export default function SongForm() {
     }
   };
 
-
-
   const handlers = useSwipeable({
     onSwipedLeft: () => setActiveIndex((prev) => Math.min(prev + 1, 1)),
     onSwipedRight: () => setActiveIndex((prev) => Math.max(prev - 1, 0)),
     trackMouse: true,
   })
-
 
   useEffect(() => {
     if (modalInfo.type) {
@@ -244,9 +294,7 @@ export default function SongForm() {
   }, [isPageLoading]);
 
   return (
-
     <>
-
       {confirmation && (
         <ModalMessage
           message="Are you ready to submit?"
@@ -254,8 +302,6 @@ export default function SongForm() {
           onCancel={handleCancelSubmit}
         />
       )}
-
-
 
       <div {...handlers} className="w-screen h-screen overflow-hidden">
         <div
@@ -276,16 +322,24 @@ export default function SongForm() {
                   value={title}
                   placeholder="Song Title"
                   onChange={(e) => setTitle(e.target.value)}
-                  className="p-2 w-full rounded-lg bg-white/5 backdrop-blur-md border border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/40"
+                  className={`p-2 w-full rounded-lg bg-white/5 backdrop-blur-md border ${titleError ? 'border-red-500 shake' : 'border-white/30'
+                    } text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/40`}
                 />
               </div>
               <div>
                 <input
                   type="text"
                   value={key}
-                  placeholder="Key (e.g., G, C)"
-                  onChange={(e) => setKey(e.target.value)}
-                  className="p-2 w-full rounded-lg bg-white/5 backdrop-blur-md border border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/40"
+                  placeholder="Key (e.g., G, C, G#, C Major, G Minor) Or No Key"
+                  onChange={(e) => {
+                    setKey(e.target.value);
+                    // Clear error when user starts correcting
+                    if (keyError && e.target.value.trim().length <= 10) {
+                      setKeyError(false);
+                    }
+                  }}
+                  className={`p-2 w-full rounded-lg bg-white/5 backdrop-blur-md border ${keyError ? 'border-red-500 shake' : 'border-white/30'
+                    } text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/40`}
                 />
               </div>
 
@@ -325,7 +379,8 @@ export default function SongForm() {
                     value={section.lyrics}
                     onChange={(e) => handleSectionChange(index, 'lyrics', e.target.value)}
                     placeholder="Lyrics"
-                    className="p-2 w-full resize-y rounded-lg border"
+                    className={`p-2 w-full resize-y rounded-lg border ${lyricsErrors[index] ? 'border-red-500 shake' : ''
+                      }`}
                     rows={3}
                   />
                 </div>
@@ -414,6 +469,19 @@ export default function SongForm() {
         )}
 
       </div>
+
+      <style jsx global>{`
+          .shake {
+          animation: shake 0.3s;
+          }
+          @keyframes shake {
+          0% { transform: translateX(0); }
+          25% { transform: translateX(-4px); }
+          50% { transform: translateX(4px); }
+          75% { transform: translateX(-4px); }
+          100% { transform: translateX(0); }
+          }
+     `}</style>
     </>
   )
 }
