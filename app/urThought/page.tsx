@@ -136,9 +136,6 @@ function ShareUrOpinion() {
     }
   }, [modalInfo]);
 
-  const trimmedName = formData.name.trim();
-  const trimmedMessage = formData.message.trim();
-
   const confirmSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault(); // ✅ Prevent the default form submission
     setPendingSubmit(true);
