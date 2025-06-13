@@ -39,15 +39,15 @@ const ContactUs = () => {
             <li className="flex items-start gap-4">
               <Phone className="text-blue-200 mt-1" />
               <div>
-                <p className="font-medium">John Doe – Website Admin</p>
-                <p className="">+1 (555) 123-4567</p>
+                <p className="font-medium">Dumdibabari Promise – Stata CM</p>
+                <p className="">09092868267</p>
               </div>
             </li>
             <li className="flex items-start gap-4">
               <Phone className="text-blue-200 mt-1" />
               <div>
-                <p className="font-medium">Jane Smith – Support Lead</p>
-                <p className="">+1 (555) 987-6543</p>
+                <p className="font-medium">Festus Chibuzor – Ass CM</p>
+                <p className="">08105571071</p>
               </div>
             </li>
           </ul>
@@ -60,15 +60,15 @@ const ContactUs = () => {
             <li className="flex items-start gap-4">
               <MapPin className="text-green-300 mt-1" />
               <div>
-                <p className="font-medium">Headquarters</p>
-                <p>123 Main Street, Cityville, Country</p>
+                <p className="font-medium">National Headquarters</p>
+                <p>Chosen Estate, Amuwo Odofin, Oshodi / Apapa Express Way, Ijesha, by Ijesha Bus Stop, Lagos, Nigeria, West Africa</p>
               </div>
             </li>
             <li className="flex items-start gap-4">
               <MapPin className="text-green-300 mt-1" />
               <div>
-                <p className="font-medium">Branch – East Side</p>
-                <p>456 East Ave, Suburbia, Country</p>
+                <p className="font-medium">Portharcourt Headquaters</p>
+                <p>Kilimeter 4, Off East / West Road, Before Rumuosi Flyover, Behind Charkin, Chosen Estate, Portharcourt, River state </p>
               </div>
             </li>
           </ul>
@@ -81,7 +81,7 @@ const ContactUs = () => {
             <Mail className="text-red-200 mt-1" />
             <div>
               <p>For general inquiries, please email us at:</p>
-              <p className="text-white font-medium underline">contact@yourwebsite.com</p>
+              <p className="text-white font-medium underline">TLCCRM.Portharcourt.Youthchoir@gmail.com</p>
             </div>
           </div>
         </section>

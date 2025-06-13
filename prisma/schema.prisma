@@ -31,3 +31,13 @@ model Section {
   song      Song     @relation(fields: [songId], references: [id], onDelete: Cascade)
   songId    String
 }
+
+
+model Opinion {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  phone     String
+  message   String
+  createdAt DateTime @default(now())
+}
