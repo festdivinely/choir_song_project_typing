@@ -17,7 +17,11 @@ const footerComp = () => {
                             height: 50
                         }}></div>
                         <div className='flex flex-col justify-center items-center'>
-                            <h2 className='text-xl'>The Lord's Chosen Charismatic</h2>
+                            <h2
+                                className="text-xl bg-gradient-to-b from-red-400 to-green-400 bg-clip-text text-transparent opacity-100"
+                            >
+                                The Lord's Chosen Charismatic
+                            </h2>
                             <h2>Revival Movement</h2>
                             <h2>Youth Choir Department</h2>
                         </div>

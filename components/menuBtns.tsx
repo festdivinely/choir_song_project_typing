@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { icons } from "../constants/icons";
 import Image from "next/image";
+import { images } from "../constants/images";
 import { useLoadingStore } from '../lib/songStore';
 
 function MenuBtns() {
@@ -58,9 +59,41 @@ function MenuBtns() {
         onClick={() => router.push("/")}
       >
         {isVerySmall ? (
-          <Image src={icons.logo} alt="Logo" width={30} height={30} />
+          <div className='w-fit h-fit' style={{
+            backgroundImage: `url(${images.chosenlogo.src})`,
+            backgroundSize: 'cover',
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'center',
+            width: 50,
+            height: 50
+          }}>
+          </div>
         ) : (
-          <h1 className="text-3xl md:text-5xl font-bold">Welcome</h1>
+          <div className="w-fit h-fit flex justify-center items-center gap-2">
+            <div className='w-fit h-fit mt-[-2px]' style={{
+              backgroundImage: `url(${images.chosenlogo.src})`,
+              backgroundSize: 'cover',
+              backgroundRepeat: 'no-repeat',
+              backgroundPosition: 'center',
+              width: 50,
+              height: 50
+            }}>
+            </div>
+            <div>
+              <h1
+                className="text-lg md:text-xl font-bold"
+                style={{ fontFamily: "'Cinzel Decorative', cursive" }}
+              >
+                TLCCRM
+              </h1>
+              <h1
+                className="text-lg md:text-xl font-bold mt-[-4px] whitespace-nowrap"
+                style={{ fontFamily: "'Cinzel Decorative', cursive" }}
+              >
+                Youth Choir
+              </h1>
+            </div>
+          </div>
         )}
       </div>
 
@@ -101,11 +134,10 @@ function MenuBtns() {
 
           {/* Dropdown menu */}
           <div
-            className={`absolute top-full mt-2 right-0 w-48 backdrop-blur-lg bg-white/10 border border-white/20 rounded-xl p-4 shadow-lg transition-all duration-300 ${
-              menuOpen
-                ? "opacity-100 translate-y-0 pointer-events-auto"
-                : "opacity-0 -translate-y-2 pointer-events-none"
-            }`}
+            className={`absolute top-full mt-2 right-0 w-48 backdrop-blur-lg bg-white/10 border border-white/20 rounded-xl p-4 shadow-lg transition-all duration-300 ${menuOpen
+              ? "opacity-100 translate-y-0 pointer-events-auto"
+              : "opacity-0 -translate-y-2 pointer-events-none"
+              }`}
           >
             {navItems.map((item) => (
               <div
@@ -115,7 +147,7 @@ function MenuBtns() {
                   setPageLoading(true);
                   handleNavClick(item.path)
                 }}
-                
+
               >
                 <Image
                   src={item.icon}

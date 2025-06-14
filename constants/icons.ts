@@ -24,6 +24,8 @@ import youtube from "@/assets/icons/youtube.png"
 import facebook from "@/assets/icons/facebook.png"
 import x from "@/assets/icons/x.png"
 import instagram from "@/assets/icons/instagram.png"
+import note1 from "@/assets/icons/note1.png"
+import note2 from "@/assets/icons/note2.png"
 
 export const icons = {
   home,
@@ -51,5 +53,7 @@ export const icons = {
   youtube,
   facebook,
   x,
-  instagram
+  instagram,
+  note1,
+  note2
 };

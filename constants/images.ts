@@ -8,7 +8,7 @@ import rankingGradient from "@/assets/images/rankingGradient.png";
 import bluesky from "@/assets/images/bluesky.png"
 import youthchoir from "@/assets/images/youthchoir.png"
 import bluewatershape1 from "@/assets/images/bluewatershape1.png"
-import chosenlogo from "@/assets/images/chosenlogo.jpg"
+import chosenlogo from "@/assets/images/chosenlogo.png"
 
 export const images = {
   bg,
