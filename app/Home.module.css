@@ -1,0 +1,33 @@
+/* Home.module.css */
+.container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background: linear-gradient(to bottom right, #1E6091 10%, #184E77 90%);
+    /* background: linear-gradient(to bottom right, #22d3ee, #06b6d4, #0e7490);  */
+  }
+
+    
+  .canvasStyle {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    background: transparent; /* ✅ This is key */
+  }
+  
+  
+  .overlay {
+    position: relative;
+    z-index: 10; /* 👈 Makes JSX appear above the canvas */
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding-top: 3px;
+  }
+  
