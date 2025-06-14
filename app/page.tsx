@@ -20,8 +20,6 @@ import {resolveCollision,} from './utils/physics'
 export const dynamic = 'force-dynamic'
 export const fetchCache = 'force-no-store'
 
-const cyanColors: string[] = ['#00FFFF', '#66FFFF', '#009999', '#008B8B', '#CCEFFF']
-
 type xDirection = number
 type yDirection = number
 type radius = number
@@ -156,8 +154,8 @@ export default function Home() {
       const numberOfCircles = Math.max(20, Math.min(calculatedCount, 120)) // clamp to [20, 120]
     
       for (let i = 0; i < numberOfCircles; i++) {
-        let x = randomIntFromRange(radius, canvas.width - radius)
-        let y = randomIntFromRange(radius, canvas.height - radius)
+        const x = randomIntFromRange(radius, canvas.width - radius)
+        const y = randomIntFromRange(radius, canvas.height - radius)
         const color = randomColor(colors)
     
         // Prevent overlapping

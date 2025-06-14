@@ -475,7 +475,7 @@ export default function SongForm() {
             backgroundRepeat: 'no-repeat',
             backgroundPosition: 'center',
           }}>
-            <div className="max-w-2xl mx-auto whitespace-pre-wrap text-white">
+            <div className="max-w-2xl mx-auto whitespace-pre-wrap text-white space-y-6 bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-6 shadow-lg">
               <h1 className="text-2xl font-bold mb-2">Title: {title}</h1>
               <h2 className="text-lg mb-4">Key: {key}</h2>
               {sections.map((section, index) => (

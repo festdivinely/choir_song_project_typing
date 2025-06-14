@@ -20,7 +20,7 @@ const footerComp = () => {
                             <h2
                                 className="text-xl bg-gradient-to-b from-red-400 to-green-400 bg-clip-text text-transparent opacity-100"
                             >
-                                The Lord's Chosen Charismatic
+                                <h2 className="text-xl">The Lord&apos;s Chosen Charismatic</h2>
                             </h2>
                             <h2>Revival Movement</h2>
                             <h2>Youth Choir Department</h2>
