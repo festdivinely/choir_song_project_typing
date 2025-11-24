@@ -11,8 +11,7 @@ type EmailType = "email_verification" | "device_verification" | "password_reset"
 interface EmailDataMap {
     email_verification: {
         username: string;
-        verificationLink: string;
-        token: string;
+        verificationCode: string;
         supportEmail: string;
     };
     device_verification: {
@@ -26,8 +25,7 @@ interface EmailDataMap {
     };
     password_reset: {
         username: string;
-        resetLink: string;
-        token: string;
+        resetCode: string;
         supportEmail: string;
     };
 }
@@ -51,7 +49,6 @@ const getTemplate = (type: EmailType, data: EmailDataMap[EmailType]) => {
             throw new Error("Unknown email type");
     }
 };
-
 
 export async function POST(request: NextRequest) {
     try {
@@ -81,6 +78,12 @@ export async function POST(request: NextRequest) {
             subject: emailContent.subject,
             text: emailContent.text,
             html: emailContent.html,
+        });
+
+        console.info("Email sent successfully", {
+            type,
+            to,
+            subject: emailContent.subject
         });
 
         return NextResponse.json({ success: true, message: "Email sent successfully" });

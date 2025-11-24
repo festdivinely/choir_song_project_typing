@@ -1,28 +1,27 @@
 // /src/lib/email/templates/emailVerification.ts
 export const emailVerificationTemplate = (data: {
-    username: string;
-    verificationLink: string;
-    token: string;
-    supportEmail: string;
+  username: string;
+  verificationCode: string;
+  supportEmail: string;
 }) => {
-    const { username, verificationLink, token, supportEmail } = data;
+  const { username, verificationCode, supportEmail } = data;
 
-    return {
-        subject: 'Verify Your Email - Quantum Robots',
-        text: `
+  return {
+    subject: 'Verify Your Email - Quantum Robots',
+    text: `
 Welcome to Quantum Robots
 
-To verify your email, use the following token:
+To verify your email, use the following verification code:
 
-Token: ${token}
+Verification Code: ${verificationCode}
 
-Or click this link to verify: ${verificationLink}
+Enter this code in the Quantum Robots app to complete your registration.
 
-This token expires in 15 minutes. If you didn't register, ignore this email.
+This code expires in 15 minutes. If you didn't register, ignore this email.
 
 Need help? Contact ${supportEmail}
     `,
-        html: `<!DOCTYPE html>
+    html: `<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
@@ -42,18 +41,25 @@ Need help? Contact ${supportEmail}
           <tr>
             <td style="padding:30px; color:#333333; font-size:16px; line-height:1.6;">
               <h2 style="margin-top:0; color:#000000;">Welcome, ${username}!</h2>
-              <p>To verify your email, use the token below:</p>
-              <p style="text-align:center; margin:30px 0;">
-                <span style="font-size:18px; background:#f0f0f0; padding:15px 25px; border-radius:8px; display:inline-block; font-weight:bold; border: 2px solid #00ff41;">
-                  ${token}
-                </span>
-              </p>
-              <p style="text-align:center;">
-                <a href="${verificationLink}" style="background:#00ff41; color:#000000; padding:12px 30px; text-decoration:none; border-radius:5px; font-weight:bold; display:inline-block;">
-                  Verify Email
-                </a>
-              </p>
-              <p>This token expires in <b>15 minutes</b>. If you didn't sign up, ignore this email.</p>
+              <p>To verify your email, use the verification code below in the Quantum Robots app:</p>
+              
+              <div style="text-align:center; margin:30px 0;">
+                <div style="font-size:32px; font-weight:bold; letter-spacing:8px; color:#000000; background:#f0f0f0; padding:20px; border-radius:8px; display:inline-block; border: 3px solid #00ff41;">
+                  ${verificationCode}
+                </div>
+              </div>
+              
+              <div style="background:#f8f9fa; padding:15px; border-radius:8px; border-left:4px solid #00ff41;">
+                <p style="margin:0; font-size:14px;"><strong>How to use this code:</strong></p>
+                <ol style="margin:10px 0 0 0; padding-left:20px; font-size:14px;">
+                  <li>Open the Quantum Robots mobile app</li>
+                  <li>Go to the Email Verification screen</li>
+                  <li>Enter the code above</li>
+                  <li>Click "Verify Email"</li>
+                </ol>
+              </div>
+              
+              <p style="margin-top:20px;">This code expires in <b>15 minutes</b>. If you didn't sign up, please ignore this email.</p>
             </td>
           </tr>
           <tr>
@@ -68,5 +74,5 @@ Need help? Contact ${supportEmail}
   </table>
 </body>
 </html>`
-    };
+  };
 };

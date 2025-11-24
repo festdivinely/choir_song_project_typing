@@ -1,32 +1,31 @@
 // /src/lib/email/templates/passwordReset.ts
 export const passwordResetTemplate = (data: {
-    username: string;
-    resetLink: string;
-    token: string;
-    supportEmail: string;
+  username: string;
+  resetCode: string;
+  supportEmail: string;
 }) => {
-    const { username, resetLink, token, supportEmail } = data;
+  const { username, resetCode, supportEmail } = data;
 
-    return {
-        subject: 'Reset Your Password - Quantum Robots',
-        text: `
+  return {
+    subject: 'Reset Your Password - Quantum Robots',
+    text: `
 Password Reset Request - Quantum Robots
 
 Hello ${username},
 
 We received a request to reset your password for your Quantum Robots account.
 
-Reset Token: ${token}
+Reset Code: ${resetCode}
 
-Reset Link: ${resetLink}
+Enter this code in the Quantum Robots app to reset your password.
 
-This password reset link will expire in 1 hour.
+This password reset code will expire in 1 hour.
 
 If you didn't request a password reset, please ignore this email.
 
 Need help? Contact ${supportEmail}
     `,
-        html: `<!DOCTYPE html>
+    html: `<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
@@ -48,18 +47,24 @@ Need help? Contact ${supportEmail}
               <h2 style="margin-top:0; color:#000000;">Password Reset Request</h2>
               <p>Hello ${username},</p>
               <p>We received a request to reset your password for your Quantum Robots account.</p>
-              <p><strong>Reset Token:</strong></p>
-              <div style="background:#f0f0f0; padding:10px; border-radius:5px; font-family:monospace; margin:10px 0;">
-                ${token}
+              
+              <div style="text-align:center; margin:30px 0;">
+                <div style="font-size:32px; font-weight:bold; letter-spacing:8px; color:#000000; background:#f0f0f0; padding:20px; border-radius:8px; display:inline-block; border: 3px solid #00ff41;">
+                  ${resetCode}
+                </div>
               </div>
-              <p style="text-align:center; margin:30px 0;">
-                <a href="${resetLink}" style="background:#00ff41; color:#000000; padding:12px 30px; text-decoration:none; border-radius:5px; font-weight:bold; display:inline-block;">
-                  Reset Password
-                </a>
-              </p>
-              <p>If the button doesn't work, copy and paste this link in your browser:</p>
-              <p style="word-break:break-all;">${resetLink}</p>
-              <p><strong>This password reset link will expire in 1 hour.</strong></p>
+              
+              <div style="background:#f8f9fa; padding:15px; border-radius:8px; border-left:4px solid #00ff41;">
+                <p style="margin:0; font-size:14px;"><strong>How to reset your password:</strong></p>
+                <ol style="margin:10px 0 0 0; padding-left:20px; font-size:14px;">
+                  <li>Open the Quantum Robots mobile app</li>
+                  <li>Go to the Reset Password screen</li>
+                  <li>Enter the code above</li>
+                  <li>Create your new password</li>
+                </ol>
+              </div>
+              
+              <p style="margin-top:20px;"><strong>This password reset code will expire in 1 hour.</strong></p>
               <p>If you didn't request a password reset, please ignore this email.</p>
             </td>
           </tr>
@@ -75,5 +80,5 @@ Need help? Contact ${supportEmail}
   </table>
 </body>
 </html>`
-    };
+  };
 };
