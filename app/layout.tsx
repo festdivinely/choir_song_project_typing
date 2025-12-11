@@ -1,6 +1,13 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Cinzel_Decorative } from "next/font/google"; // 👈 1. Import the new font
 import "./globals.css";
+
+// 2. Load the Cinzel Decorative font
+const cinzelDecorative = Cinzel_Decorative({
+  weight: '700',
+  subsets: ["latin"],
+});
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,12 +31,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head>
-      <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&display=swap" rel="stylesheet" />
-      </head>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      {/* Remove the <link> tag from the <head> */}
+      <body className={`${geistSans.variable} ${geistMono.variable} ${cinzelDecorative.className} antialiased`}>
         {children}
       </body>
     </html>

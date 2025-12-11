@@ -94,7 +94,7 @@ export default function SongForm() {
 
   useEffect(() => {
     router.refresh()
-  }, [])
+  }, [router]) // ✅ Add router to dependency array
 
   useEffect(() => {
     if (key.trim().length > 10) {

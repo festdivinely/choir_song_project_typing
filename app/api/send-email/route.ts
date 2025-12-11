@@ -43,7 +43,12 @@ type EmailRequestBody<T extends EmailType = EmailType> = {
 };
 
 // Template selector - Update to include backup_codes
-const getTemplate = (type: EmailType, data: EmailDataMap[EmailType]) => {
+// Template selector - Update to include backup_codes
+const getTemplate = (type: EmailType, data: EmailDataMap[EmailType]): {
+    subject: string;
+    text: string;
+    html: string;
+} => {
     switch (type) {
         case "email_verification":
             return emailVerificationTemplate(data as EmailDataMap["email_verification"]);
@@ -51,7 +56,7 @@ const getTemplate = (type: EmailType, data: EmailDataMap[EmailType]) => {
             return deviceVerificationTemplate(data as EmailDataMap["device_verification"]);
         case "password_reset":
             return passwordResetTemplate(data as EmailDataMap["password_reset"]);
-        case "backup_codes": // Add this case
+        case "backup_codes":
             return backupCodesTemplate(data as EmailDataMap["backup_codes"]);
         default:
             throw new Error("Unknown email type");
