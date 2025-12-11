@@ -4,8 +4,9 @@ import { transporter } from "../../../lib/emailTransport/transporter";
 import { emailVerificationTemplate } from "../../../lib/emailTemplates/emailVerification";
 import { deviceVerificationTemplate } from "../../../lib/emailTemplates/deviceVerification";
 import { passwordResetTemplate } from "../../../lib/emailTemplates/passwordReset";
+import { backupCodesTemplate } from "../../../lib/emailTemplates/backpCodes"; // Add this import
 
-type EmailType = "email_verification" | "device_verification" | "password_reset";
+type EmailType = "email_verification" | "device_verification" | "password_reset" | "backup_codes"; // Add backup_codes type
 
 // Define a generic email data type for each template
 interface EmailDataMap {
@@ -28,6 +29,11 @@ interface EmailDataMap {
         resetCode: string;
         supportEmail: string;
     };
+    backup_codes: { // Add backup_codes type
+        username: string;
+        backupCodes: string[];
+        supportEmail: string;
+    };
 }
 
 type EmailRequestBody<T extends EmailType = EmailType> = {
@@ -36,7 +42,7 @@ type EmailRequestBody<T extends EmailType = EmailType> = {
     data: EmailDataMap[T];
 };
 
-// Template selector
+// Template selector - Update to include backup_codes
 const getTemplate = (type: EmailType, data: EmailDataMap[EmailType]) => {
     switch (type) {
         case "email_verification":
@@ -45,6 +51,8 @@ const getTemplate = (type: EmailType, data: EmailDataMap[EmailType]) => {
             return deviceVerificationTemplate(data as EmailDataMap["device_verification"]);
         case "password_reset":
             return passwordResetTemplate(data as EmailDataMap["password_reset"]);
+        case "backup_codes": // Add this case
+            return backupCodesTemplate(data as EmailDataMap["backup_codes"]);
         default:
             throw new Error("Unknown email type");
     }
