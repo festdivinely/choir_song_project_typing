@@ -4,11 +4,11 @@ import { transporter } from "../../../lib/emailTransport/transporter";
 import { emailVerificationTemplate } from "../../../lib/emailTemplates/emailVerification";
 import { deviceVerificationTemplate } from "../../../lib/emailTemplates/deviceVerification";
 import { passwordResetTemplate } from "../../../lib/emailTemplates/passwordReset";
-import { backupCodesTemplate } from "../../../lib/emailTemplates/backpCodes"; // Add this import
+import { backupCodesTemplate } from "../../../lib/emailTemplates/backpCodes";
+import { backupCodeUsedTemplate } from "../../../lib/emailTemplates/backupCodeInfo";
 
-type EmailType = "email_verification" | "device_verification" | "password_reset" | "backup_codes"; // Add backup_codes type
+type EmailType = "email_verification" | "device_verification" | "password_reset" | "backup_codes" | "backup_code_used";
 
-// Define a generic email data type for each template
 interface EmailDataMap {
     email_verification: {
         username: string;
@@ -29,21 +29,30 @@ interface EmailDataMap {
         resetCode: string;
         supportEmail: string;
     };
-    backup_codes: { // Add backup_codes type
+    backup_codes: {
         username: string;
         backupCodes: string[];
         supportEmail: string;
     };
+    backup_code_used: {
+        username: string;
+        timestamp: string;
+        ip: string;
+        country: string;
+        deviceInfo: string;
+        remainingCodes: number;
+        action: string;
+        supportEmail: string;
+    };
 }
 
+// ✅ ADD THIS TYPE DEFINITION:
 type EmailRequestBody<T extends EmailType = EmailType> = {
     type: T;
     to: string;
     data: EmailDataMap[T];
 };
 
-// Template selector - Update to include backup_codes
-// Template selector - Update to include backup_codes
 const getTemplate = (type: EmailType, data: EmailDataMap[EmailType]): {
     subject: string;
     text: string;
@@ -58,8 +67,10 @@ const getTemplate = (type: EmailType, data: EmailDataMap[EmailType]): {
             return passwordResetTemplate(data as EmailDataMap["password_reset"]);
         case "backup_codes":
             return backupCodesTemplate(data as EmailDataMap["backup_codes"]);
+        case "backup_code_used":
+            return backupCodeUsedTemplate(data as EmailDataMap["backup_code_used"]);
         default:
-            throw new Error("Unknown email type");
+            throw new Error(`Unknown email type: ${type}`);
     }
 };
 
