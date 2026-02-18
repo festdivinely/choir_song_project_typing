@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '../../../../lib/prisma';
+import { db } from '../../../../lib/prisma'; // <--- changed prisma -> db
 
 export async function DELETE(req: Request) {
-  
   try {
     console.log('Bulk delete request received');
     const body = await req.json();
@@ -18,7 +17,7 @@ export async function DELETE(req: Request) {
 
     const { ids } = body;
 
-    console.log(ids)
+    console.log(ids);
     
     if (!Array.isArray(ids)) {
       console.error('Invalid ids format:', ids);
@@ -37,7 +36,7 @@ export async function DELETE(req: Request) {
     }
 
     console.log('Attempting to delete songs with IDs:', ids);
-    const deleteResult = await prisma.song.deleteMany({
+    const deleteResult = await db.song.deleteMany({
       where: {
         id: { in: ids }
       }
@@ -70,4 +69,3 @@ export async function DELETE(req: Request) {
     );
   }
 }
-

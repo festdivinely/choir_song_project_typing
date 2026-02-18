@@ -1,15 +1,14 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import { FaTrashAlt } from 'react-icons/fa'
-import Spinner from '../components/spinner'
-import type { SongWithSections } from '../app/types/song'
-import { useSongStore } from '../lib/songStore'
-import { useLoadingStore } from '../lib/songStore'
-import { useSelectionStore } from '../lib/songStore'
-import { motion, AnimatePresence } from 'framer-motion';
-
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { FaTrashAlt } from "react-icons/fa";
+import Spinner from "../components/spinner";
+import type { SongWithSections } from "../app/types/song";
+import { useSongStore } from "../lib/songStore";
+import { useLoadingStore } from "../lib/songStore";
+import { useSelectionStore } from "../lib/songStore";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface ModalMessageProps {
   message: string;
@@ -17,8 +16,11 @@ interface ModalMessageProps {
   onCancel: () => void;
 }
 
-
-const ModalMessage: React.FC<ModalMessageProps> = ({ message, onConfirm, onCancel }) => {
+const ModalMessage: React.FC<ModalMessageProps> = ({
+  message,
+  onConfirm,
+  onCancel,
+}) => {
   return (
     <AnimatePresence>
       <motion.div
@@ -28,7 +30,7 @@ const ModalMessage: React.FC<ModalMessageProps> = ({ message, onConfirm, onCance
         exit={{ opacity: 0 }}
       >
         <motion.div
-          className="bg-[#c1d5ee] text-[#4f4f50] rounded-2xl p-6 text-center mx-5 max-w-sm w-full shadow-[6px_6px_13px_#656566,_-5px_-5px_13px_#656566]"
+          className="bg-[#c1d5ee] text-[#4f4f50] rounded-2xl p-6 text-center mx-5 max-w-sm w-full shadow-[6px_6px_13px_#656566,-5px_-5px_13px_#656566]"
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.8, opacity: 0 }}
@@ -54,142 +56,141 @@ const ModalMessage: React.FC<ModalMessageProps> = ({ message, onConfirm, onCance
   );
 };
 
-
 export default function SongBar({ song }: { song: SongWithSections }) {
-  const [expanded, setExpanded] = useState(false)
-  const [isSelected, setIsSelected] = useState(false)
-  const router = useRouter()
+  const [expanded, setExpanded] = useState(false);
+  const [isSelected, setIsSelected] = useState(false);
+  const router = useRouter();
 
   const [isDeleting, setIsDeleting] = useState(false);
   const [notification, setNotification] = useState<{
-    message: string
-    type: 'success' | 'error' | null
-  }>({ message: '', type: null })
+    message: string;
+    type: "success" | "error" | null;
+  }>({ message: "", type: null });
 
   // ✅ Stable selectors from Zustand stores
-  const addSong = useSelectionStore((state) => state.addSong)
-  const removeSong = useSelectionStore((state) => state.removeSong)
-  const selectedSongIds = useSelectionStore((state) => state.selectedSongIds)
+  const addSong = useSelectionStore((state) => state.addSong);
+  const removeSong = useSelectionStore((state) => state.removeSong);
+  const selectedSongIds = useSelectionStore((state) => state.selectedSongIds);
 
-  const count = useSelectionStore((state) => state.count)
-  const resetSelection = useSelectionStore((state) => state.resetSelection)
+  const count = useSelectionStore((state) => state.count);
+  const resetSelection = useSelectionStore((state) => state.resetSelection);
 
-  const setCurrentSong = useSongStore((state) => state.setCurrentSong)
+  const setCurrentSong = useSongStore((state) => state.setCurrentSong);
 
-  const isPageLoading = useLoadingStore((state) => state.isPageLoading)
-  const setPageLoading = useLoadingStore((state) => state.setPageLoading)
+  const isPageLoading = useLoadingStore((state) => state.isPageLoading);
+  const setPageLoading = useLoadingStore((state) => state.setPageLoading);
 
-  const [confirmation, setConfirmation] = useState(false)
-  const [pendingDelete, setPendingDelete] = useState<{ type: 'single' | 'bulk'; songId?: string } | null>(null)
-
+  const [confirmation, setConfirmation] = useState(false);
+  const [pendingDelete, setPendingDelete] = useState<{
+    type: "single" | "bulk";
+    songId?: string;
+  } | null>(null);
 
   // Individual delete (open modal first)
   const confirmSingleDelete = (id: string) => {
-    setPendingDelete({ type: 'single', songId: id });
+    setPendingDelete({ type: "single", songId: id });
     setConfirmation(true);
-  }
+  };
 
   // Bulk delete (open modal first)
   const confirmBulkDelete = () => {
-    setPendingDelete({ type: 'bulk' });
+    setPendingDelete({ type: "bulk" });
     setConfirmation(true);
-  }
-
+  };
 
   // Update the handleDelete function in SongBar
   // Handle individual song deletion
   const handleDelete = async (id: string) => {
-    setIsDeleting(true)
-    setNotification({ message: '', type: null })
+    setIsDeleting(true);
+    setNotification({ message: "", type: null });
 
     try {
       const response = await fetch(`/api/songs/${id}`, {
-        method: 'DELETE',
-      })
+        method: "DELETE",
+      });
 
       if (!response.ok) {
-        throw new Error('Failed to delete song')
+        throw new Error("Failed to delete song");
       }
 
       if (selectedSongIds.includes(id)) {
-        removeSong(id)
+        removeSong(id);
       }
 
       setNotification({
-        message: 'Song deleted successfully!',
-        type: 'success'
-      })
+        message: "Song deleted successfully!",
+        type: "success",
+      });
 
       // Refresh the page after a short delay to show success message
-      setTimeout(() => router.refresh(), 1000)
+      setTimeout(() => router.refresh(), 1000);
     } catch (err) {
       setNotification({
-        message: err instanceof Error ? err.message : 'Failed to delete song',
-        type: 'error'
-      })
+        message: err instanceof Error ? err.message : "Failed to delete song",
+        type: "error",
+      });
     } finally {
-      setIsDeleting(false)
+      setIsDeleting(false);
     }
-  }
+  };
 
   const handleConfirmDelete = () => {
     if (!pendingDelete) return;
 
-    if (pendingDelete.type === 'single' && pendingDelete.songId) {
+    if (pendingDelete.type === "single" && pendingDelete.songId) {
       handleDelete(pendingDelete.songId);
-    } else if (pendingDelete.type === 'bulk') {
+    } else if (pendingDelete.type === "bulk") {
       handleBulkDelete();
     }
 
     setConfirmation(false);
     setPendingDelete(null);
-  }
+  };
 
   const handleCancelDelete = () => {
     setConfirmation(false);
     setPendingDelete(null);
-  }
-
+  };
 
   const handleBulkDelete = async () => {
     if (selectedSongIds.length === 0) return;
 
     setIsDeleting(true);
-    setNotification({ message: '', type: null });
-    console.log('Attempting to delete:', selectedSongIds); // Debug log
+    setNotification({ message: "", type: null });
+    console.log("Attempting to delete:", selectedSongIds); // Debug log
 
     try {
-      const response = await fetch('/api/songs/bulk', {
-        method: 'DELETE',
+      const response = await fetch("/api/songs/bulk", {
+        method: "DELETE",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ ids: selectedSongIds }),
       });
 
-      console.log('Delete response status:', response.status); // Debug log
+      console.log("Delete response status:", response.status); // Debug log
 
       if (!response.ok) {
         const errorText = await response.text();
-        console.error('Delete failed:', errorText); // Debug log
-        throw new Error(errorText || 'Delete failed');
+        console.error("Delete failed:", errorText); // Debug log
+        throw new Error(errorText || "Delete failed");
       }
 
       const data = await response.json();
-      console.log('Delete success:', data); // Debug log
+      console.log("Delete success:", data); // Debug log
 
       setNotification({
         message: data.message || `${selectedSongIds.length} song(s) deleted!`,
-        type: 'success'
+        type: "success",
       });
 
       resetSelection();
       setTimeout(() => router.refresh(), 1000);
     } catch (err) {
-      console.error('Bulk delete error:', err);
+      console.error("Bulk delete error:", err);
       setNotification({
-        message: err instanceof Error ? err.message : 'Failed to delete songs',
-        type: 'error'
+        message: err instanceof Error ? err.message : "Failed to delete songs",
+        type: "error",
       });
     } finally {
       setIsDeleting(false);
@@ -200,41 +201,40 @@ export default function SongBar({ song }: { song: SongWithSections }) {
   useEffect(() => {
     if (notification.type) {
       const timer = setTimeout(() => {
-        setNotification({ message: '', type: null })
-      }, 3000)
-      return () => clearTimeout(timer)
+        setNotification({ message: "", type: null });
+      }, 3000);
+      return () => clearTimeout(timer);
     }
-  }, [notification])
-
+  }, [notification]);
 
   const truncate = (text: string, length = 50) =>
-    text.length <= length ? text : `${text.slice(0, length)}...`
+    text.length <= length ? text : `${text.slice(0, length)}...`;
 
   const handleClick = () => {
-    setCurrentSong(song)
-    setPageLoading(true)
-    router.push('/edit')
-  }
+    setCurrentSong(song);
+    setPageLoading(true);
+    router.push("/edit");
+  };
 
   useEffect(() => {
-    setIsSelected(selectedSongIds.includes(song.id))
-  }, [selectedSongIds, song.id])
+    setIsSelected(selectedSongIds.includes(song.id));
+  }, [selectedSongIds, song.id]);
 
   const handleCheckboxChange = (checked: boolean) => {
-    setIsSelected(checked)
+    setIsSelected(checked);
     if (checked) {
-      addSong(song.id)
+      addSong(song.id);
     } else {
-      removeSong(song.id)
+      removeSong(song.id);
     }
-  }
+  };
 
   if (isPageLoading) {
     return (
       <div className="flex items-center justify-center w-screen h-screen bg-cyan-700">
         <Spinner />
       </div>
-    )
+    );
   }
 
   // Add this to your JSX to show loading/error states
@@ -244,30 +244,30 @@ export default function SongBar({ song }: { song: SongWithSections }) {
       <div className="fixed inset-0 bg-transparent  z-50 flex items-center justify-center">
         <div className="w-12 h-12 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
       </div>
-    )
+    );
   }
 
-  {/* Notification */ }
+  {
+    /* Notification */
+  }
   {
     if (notification.type) {
       return (
         <div
-          className={`fixed inset-0 bg-transparent z-50 flex items-center justify-center ${notification.type === 'success' ? 'bg-green-600' : 'bg-red-600'
-            }`}
+          className={`fixed inset-0 bg-transparent z-50 flex items-center justify-center ${
+            notification.type === "success" ? "bg-green-600" : "bg-red-600"
+          }`}
         >
-          <div className='px-5 py-5 bg-white text-blue-500'>
+          <div className="px-5 py-5 bg-white text-blue-500">
             {notification.message}
           </div>
         </div>
-      )
+      );
     }
   }
 
-
-
   return (
     <>
-
       {confirmation && (
         <ModalMessage
           message="Are you sure you want to delete?"
@@ -318,8 +318,8 @@ export default function SongBar({ song }: { song: SongWithSections }) {
               type="button"
               className="text-blue-500 text-sm underline mt-1"
               onClick={(e) => {
-                e.stopPropagation()
-                setExpanded(true)
+                e.stopPropagation();
+                setExpanded(true);
               }}
             >
               Read more
@@ -343,5 +343,5 @@ export default function SongBar({ song }: { song: SongWithSections }) {
         </div>
       </div>
     </>
-  )
+  );
 }

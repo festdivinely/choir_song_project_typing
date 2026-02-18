@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '../../../../lib/prisma';
+import { db } from '../../../../lib/prisma'; // <--- changed prisma -> db
 
 export const dynamic = 'force-dynamic';
 
@@ -11,7 +11,7 @@ type SectionInput = {
 
 export async function PUT(req: NextRequest) {
   try {
-    const songId = req.nextUrl.pathname.split('/').pop(); // OR use `req.nextUrl.searchParams.get('id')` if passed as query param
+    const songId = req.nextUrl.pathname.split('/').pop();
     const body = await req.json();
     const { title, key, sections } = body;
 
@@ -19,7 +19,7 @@ export async function PUT(req: NextRequest) {
       return new NextResponse('Song ID is required', { status: 400 });
     }
 
-    const updatedSong = await prisma.song.update({
+    const updatedSong = await db.song.update({
       where: { id: songId },
       data: {
         title,
@@ -53,7 +53,7 @@ export async function DELETE(req: NextRequest) {
       return new NextResponse('Song ID is required', { status: 400 });
     }
 
-    await prisma.song.delete({
+    await db.song.delete({
       where: { id: songId },
     });
 

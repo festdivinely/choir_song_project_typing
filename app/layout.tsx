@@ -1,22 +1,16 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import { Cinzel_Decorative } from "next/font/google"; // 👈 1. Import the new font
+import { Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
 
-// 2. Load the Cinzel Decorative font
-const cinzelDecorative = Cinzel_Decorative({
-  weight: '700',
+const playfair = Playfair_Display({
   subsets: ["latin"],
+  weight: ["600", "700"],
+  variable: "--font-heading",
 });
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
   subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  variable: "--font-body",
 });
 
 export const metadata: Metadata = {
@@ -26,13 +20,12 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
-      {/* Remove the <link> tag from the <head> */}
-      <body className={`${geistSans.variable} ${geistMono.variable} ${cinzelDecorative.className} antialiased`}>
+      <body className={`${inter.variable} ${playfair.variable} antialiased`}>
         {children}
       </body>
     </html>

@@ -1,37 +1,27 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("POSTGRES_PRISMA_URL")
-  directUrl      = env("POSTGRES_URL_NON_POOLING")
 }
-
 
 model Song {
   id        String    @id @default(cuid())
   title     String
   key       String
-  sections  Section[] // One-to-many relationship
   createdAt DateTime  @default(now())
+  sections  Section[]
 }
 
 model Section {
-  id        String   @id @default(cuid())
-  type      String   // e.g. 'solo', 'chorus', etc.
-  label     String
-  lyrics    String
-  song      Song     @relation(fields: [songId], references: [id], onDelete: Cascade)
-  songId    String
+  id     String @id @default(cuid())
+  type   String
+  label  String
+  lyrics String
+  songId String
+  song   Song   @relation(fields: [songId], references: [id], onDelete: Cascade)
 }
-
 
 model Opinion {
   id        String   @id @default(cuid())

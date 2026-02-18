@@ -1,18 +1,18 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
-import { useSwipeable } from 'react-swipeable'
-import { images } from '../../constants/images'
+import { useState, useEffect } from "react";
+import { useSwipeable } from "react-swipeable";
+import { images } from "../../constants/images";
 import { useRouter } from "next/navigation";
-import { useLoadingStore } from '../../lib/songStore';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useLoadingStore } from "../../lib/songStore";
+import { motion, AnimatePresence } from "framer-motion";
 
-type SectionType = 'solo' | 'chorus' | 'call' | 'response' | 'bridge'
+type SectionType = "solo" | "chorus" | "call" | "response" | "bridge";
 
 interface Section {
-  type: SectionType
-  label: string
-  lyrics: string
+  type: SectionType;
+  label: string;
+  lyrics: string;
 }
 
 interface ModalMessageProps {
@@ -21,7 +21,11 @@ interface ModalMessageProps {
   onCancel: () => void;
 }
 
-const ModalMessage: React.FC<ModalMessageProps> = ({ message, onConfirm, onCancel }) => {
+const ModalMessage: React.FC<ModalMessageProps> = ({
+  message,
+  onConfirm,
+  onCancel,
+}) => {
   return (
     <AnimatePresence>
       <motion.div
@@ -31,7 +35,7 @@ const ModalMessage: React.FC<ModalMessageProps> = ({ message, onConfirm, onCance
         exit={{ opacity: 0 }}
       >
         <motion.div
-          className="bg-[#c1d5ee] text-[#4f4f50] rounded-2xl p-6 text-center mx-5 max-w-sm w-full shadow-[6px_6px_13px_#656566,_-5px_-5px_13px_#656566]"
+          className="bg-[#c1d5ee] text-[#4f4f50] rounded-2xl p-6 text-center mx-5 max-w-sm w-full shadow-[6px_6px_13px_#656566,-5px_-5px_13px_#656566]"
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.8, opacity: 0 }}
@@ -59,47 +63,53 @@ const ModalMessage: React.FC<ModalMessageProps> = ({ message, onConfirm, onCance
 
 export default function SongForm() {
   const router = useRouter();
-  const [activeIndex, setActiveIndex] = useState(0)
-  const [title, setTitle] = useState('')
-  const [key, setKey] = useState('')
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [title, setTitle] = useState("");
+  const [key, setKey] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [modalInfo, setModalInfo] = useState<{ message: string; type: 'success' | 'error' | null }>({ message: '', type: null });
-  const [sections, setSections] = useState<Section[]>([{
-    type: 'solo',
-    label: 'SOLO1',
-    lyrics: '',
-  }])
+  const [modalInfo, setModalInfo] = useState<{
+    message: string;
+    type: "success" | "error" | null;
+  }>({ message: "", type: null });
+  const [sections, setSections] = useState<Section[]>([
+    {
+      type: "solo",
+      label: "SOLO1",
+      lyrics: "",
+    },
+  ]);
 
   const [titleError, setTitleError] = useState(false);
   const [keyError, setKeyError] = useState(false);
   const [lyricsErrors, setLyricsErrors] = useState<boolean[]>([]);
 
-
   const isPageLoading = useLoadingStore((state) => state.isPageLoading);
   const setPageLoading = useLoadingStore((state) => state.setPageLoading);
 
-  const [confirmation, setConfirmation] = useState(false)
-  const [pendingSubmit, setPendingSubmit] = useState(false)
+  const [confirmation, setConfirmation] = useState(false);
+  const [pendingSubmit, setPendingSubmit] = useState(false);
 
   const trimmedTitle = title.trim();
   const trimmedKey = key.trim();
 
-  const hasSolo = sections.some(section => section.type === 'solo');
-  const hasChorus = sections.some(section => section.type === 'chorus');
+  const hasSolo = sections.some((section) => section.type === "solo");
+  const hasChorus = sections.some((section) => section.type === "chorus");
   const isKeyValid = trimmedKey.length <= 10;
-  const isLyricsLengthValid = sections.every(section => section.lyrics.trim().length >= 1);
+  const isLyricsLengthValid = sections.every(
+    (section) => section.lyrics.trim().length >= 1,
+  );
 
   const recalculateLabels = (sectionsToUpdate: Section[]): Section[] => {
-    const counts: Record<string, number> = {}
+    const counts: Record<string, number> = {};
     return sectionsToUpdate.map((section) => {
-      const type = section.type.toUpperCase()
-      counts[type] = (counts[type] || 0) + 1
+      const type = section.type.toUpperCase();
+      counts[type] = (counts[type] || 0) + 1;
       return {
         ...section,
-        label: `${type}${counts[type]}`
-      }
-    })
-  }
+        label: `${type}${counts[type]}`,
+      };
+    });
+  };
 
   useEffect(() => {
     if (key.trim().length > 10) {
@@ -119,108 +129,130 @@ export default function SongForm() {
     if (!pendingSubmit) return;
 
     // Create a mock event object if needed for handleSubmit
-    const mockEvent = { preventDefault: () => { } } as React.FormEvent<HTMLFormElement>;
+    const mockEvent = {
+      preventDefault: () => {},
+    } as React.FormEvent<HTMLFormElement>;
 
     // Validation order: from basic to complex
     if (!trimmedTitle) {
       setTitleError(true);
       setTimeout(() => setTitleError(false), 500);
-      setModalInfo({ message: 'Please fill in the title.', type: 'error' });
+      setModalInfo({ message: "Please fill in the title.", type: "error" });
       return;
     }
 
     if (!trimmedKey) {
       setKeyError(true);
       setTimeout(() => setKeyError(false), 500);
-      setModalInfo({ message: 'Please fill in the key.', type: 'error' });
+      setModalInfo({ message: "Please fill in the key.", type: "error" });
       return;
     }
 
-    const updatedErrors = sections.map(section => section.lyrics.trim().length < 1);
+    const updatedErrors = sections.map(
+      (section) => section.lyrics.trim().length < 1,
+    );
     if (updatedErrors.includes(true)) {
       setLyricsErrors(updatedErrors);
-      setTimeout(() => setLyricsErrors(new Array(sections.length).fill(false)), 500);
-      setModalInfo({ message: 'Each section\'s lyrics must be filled.', type: 'error' });
+      setTimeout(
+        () => setLyricsErrors(new Array(sections.length).fill(false)),
+        500,
+      );
+      setModalInfo({
+        message: "Each section's lyrics must be filled.",
+        type: "error",
+      });
       return;
     }
 
     if (!isKeyValid) {
       setKeyError(true);
       setTimeout(() => setKeyError(false), 500);
-      setModalInfo({ message: 'Key must no exceed 10 charaters.', type: 'error' });
+      setModalInfo({
+        message: "Key must no exceed 10 charaters.",
+        type: "error",
+      });
       return;
-    }
-
-    else if (!isLyricsLengthValid) {
+    } else if (!isLyricsLengthValid) {
       setKeyError(true);
       setTimeout(() => setKeyError(false), 500);
-      setModalInfo({ message: 'Lyrics must be above ten characters.', type: 'error' });
+      setModalInfo({
+        message: "Lyrics must be above ten characters.",
+        type: "error",
+      });
       return;
     }
 
     if (!hasSolo || !hasChorus) {
-      setModalInfo({ message: 'Song unacceptable: Type a minimum of 1 solo and 1 chorus.', type: 'error' });
+      setModalInfo({
+        message: "Song unacceptable: Type a minimum of 1 solo and 1 chorus.",
+        type: "error",
+      });
     } else {
       handleSubmit(mockEvent);
     }
 
     setConfirmation(false);
     setPendingSubmit(false);
-  }
+  };
 
   const handleCancelSubmit = () => {
     setConfirmation(false);
     setPendingSubmit(false);
-  }
+  };
 
   const handleSectionChange = (
     index: number,
     field: keyof Section,
-    value: string
+    value: string,
   ) => {
-    const updatedSections = [...sections]
-    if (field === 'type') {
-      updatedSections[index].type = value as SectionType
-      const relabeled = recalculateLabels(updatedSections)
-      setSections(relabeled)
+    const updatedSections = [...sections];
+    if (field === "type") {
+      updatedSections[index].type = value as SectionType;
+      const relabeled = recalculateLabels(updatedSections);
+      setSections(relabeled);
     } else {
-      updatedSections[index][field] = value
-      setSections(updatedSections)
+      updatedSections[index][field] = value;
+      setSections(updatedSections);
     }
-  }
+  };
 
   const addSection = () => {
-    const updated: Section[] = [...sections, { type: 'solo', label: '', lyrics: '' }]
-    setSections(recalculateLabels(updated))
-  }
+    const updated: Section[] = [
+      ...sections,
+      { type: "solo", label: "", lyrics: "" },
+    ];
+    setSections(recalculateLabels(updated));
+  };
 
   const removeSection = (index: number) => {
-    const updated = sections.filter((_, i) => i !== index)
-    setSections(recalculateLabels(updated))
-  }
+    const updated = sections.filter((_, i) => i !== index);
+    setSections(recalculateLabels(updated));
+  };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsLoading(true);
-    setModalInfo({ message: '', type: null });
+    setModalInfo({ message: "", type: null });
 
-    const payload = [{
-      title,
-      key,
-      sections,
-    }];
+    const payload = [
+      {
+        title,
+        key,
+        sections,
+      },
+    ];
 
     try {
-      const response = await fetch('/api/songs', {
-        method: 'POST',
+      const response = await fetch("/api/songs", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(payload),
       });
 
       if (!response.ok) {
-        let errorMessage = 'Failed to update song';
+        let errorMessage = "Failed to update song";
 
         try {
           const errorData = await response.json();
@@ -230,11 +262,11 @@ export default function SongForm() {
             const text = await response.text();
             errorMessage = text || errorMessage;
           } catch (textError) {
-            console.error('Could not parse error message:', textError);
+            console.error("Could not parse error message:", textError);
           }
         }
 
-        console.error('Server response:', errorMessage);
+        console.error("Server response:", errorMessage);
         setModalInfo({
           message: errorMessage,
           type: "error",
@@ -242,25 +274,28 @@ export default function SongForm() {
         throw new Error(errorMessage);
       }
 
-
       const data = await response.json();
-      console.log('Submitted:', data);
+      console.log("Submitted:", data);
 
-      setModalInfo({ message: 'Song submitted successfully!', type: 'success' });
+      setModalInfo({
+        message: "Song submitted successfully!",
+        type: "success",
+      });
 
-      setTitle('');
-      setKey('');
-      setSections([{ type: 'solo', label: 'SOLO1', lyrics: '' }]);
+      setTitle("");
+      setKey("");
+      setSections([{ type: "solo", label: "SOLO1", lyrics: "" }]);
       setActiveIndex(0);
 
-      router.push('/type');
+      router.push("/type");
     } catch (error: unknown) {
-      const apiError = error instanceof Error
-        ? { message: error.message }
-        : { message: 'Something went wrong' };
+      const apiError =
+        error instanceof Error
+          ? { message: error.message }
+          : { message: "Something went wrong" };
 
-      setModalInfo({ message: apiError.message, type: 'error' });
-      console.error('Submission error:', error);
+      setModalInfo({ message: apiError.message, type: "error" });
+      console.error("Submission error:", error);
     } finally {
       setIsLoading(false);
     }
@@ -270,17 +305,16 @@ export default function SongForm() {
     onSwipedLeft: () => setActiveIndex((prev) => Math.min(prev + 1, 1)),
     onSwipedRight: () => setActiveIndex((prev) => Math.max(prev - 1, 0)),
     trackMouse: true,
-  })
+  });
 
   useEffect(() => {
     if (modalInfo.type) {
       const timer = setTimeout(() => {
-        setModalInfo({ message: '', type: null });
+        setModalInfo({ message: "", type: null });
       }, 3000);
       return () => clearTimeout(timer);
     }
   }, [modalInfo]);
-
 
   useEffect(() => {
     setPageLoading(false);
@@ -290,7 +324,7 @@ export default function SongForm() {
   }, [setPageLoading]);
 
   useEffect(() => {
-    console.log('isPageLoading changed:', isPageLoading);
+    console.log("isPageLoading changed:", isPageLoading);
   }, [isPageLoading]);
 
   return (
@@ -309,21 +343,28 @@ export default function SongForm() {
           style={{ transform: `translateX(-${activeIndex * 100}vw)` }}
         >
           {/* LEFT - FORM SCREEN */}
-          <div className="w-[100vw] h-full overflow-y-auto p-6 bg-white" style={{
-            backgroundImage: `url(${images.bluishbg.src})`,
-            backgroundSize: 'cover',
-            backgroundRepeat: 'no-repeat',
-            backgroundPosition: 'center',
-          }}>
-            <form onSubmit={confirmSubmit} className="space-y-6 max-w-2xl mx-auto bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-6 shadow-lg">
+          <div
+            className="w-screen h-full overflow-y-auto p-6 bg-white"
+            style={{
+              backgroundImage: `url(${images.bluishbg.src})`,
+              backgroundSize: "cover",
+              backgroundRepeat: "no-repeat",
+              backgroundPosition: "center",
+            }}
+          >
+            <form
+              onSubmit={confirmSubmit}
+              className="space-y-6 max-w-2xl mx-auto bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-6 shadow-lg"
+            >
               <div>
                 <input
                   type="text"
                   value={title}
                   placeholder="Song Title"
                   onChange={(e) => setTitle(e.target.value)}
-                  className={`p-2 w-full rounded-lg bg-white/5 backdrop-blur-md border ${titleError ? 'border-red-500 shake' : 'border-white/30'
-                    } text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/40`}
+                  className={`p-2 w-full rounded-lg bg-white/5 backdrop-blur-md border ${
+                    titleError ? "border-red-500 shake" : "border-white/30"
+                  } text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/40`}
                 />
               </div>
               <div>
@@ -338,24 +379,40 @@ export default function SongForm() {
                       setKeyError(false);
                     }
                   }}
-                  className={`p-2 w-full rounded-lg bg-white/5 backdrop-blur-md border ${keyError ? 'border-red-500 shake' : 'border-white/30'
-                    } text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/40`}
+                  className={`p-2 w-full rounded-lg bg-white/5 backdrop-blur-md border ${
+                    keyError ? "border-red-500 shake" : "border-white/30"
+                  } text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/40`}
                 />
               </div>
 
               {sections.map((section, index) => (
-                <div key={index} className="space-y-2 p-4 rounded-lg bg-white/5 backdrop-blur-md border border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/40">
+                <div
+                  key={index}
+                  className="space-y-2 p-4 rounded-lg bg-white/5 backdrop-blur-md border border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/40"
+                >
                   <div className="flex justify-between items-center gap-2">
                     <select
                       value={section.type}
-                      onChange={(e) => handleSectionChange(index, 'type', e.target.value)}
+                      onChange={(e) =>
+                        handleSectionChange(index, "type", e.target.value)
+                      }
                       className="border"
                     >
-                      <option className='bg-blue-400' value="solo">Solo</option>
-                      <option value="chorus" className='bg-blue-400'>Chorus</option>
-                      <option value="call" className='bg-blue-400'>Call</option>
-                      <option value="response" className='bg-blue-400'>Response</option>
-                      <option value="bridge" className='bg-blue-400'>Bridge</option>
+                      <option className="bg-blue-400" value="solo">
+                        Solo
+                      </option>
+                      <option value="chorus" className="bg-blue-400">
+                        Chorus
+                      </option>
+                      <option value="call" className="bg-blue-400">
+                        Call
+                      </option>
+                      <option value="response" className="bg-blue-400">
+                        Response
+                      </option>
+                      <option value="bridge" className="bg-blue-400">
+                        Bridge
+                      </option>
                     </select>
 
                     <button
@@ -371,16 +428,21 @@ export default function SongForm() {
                     type="text"
                     value={section.label}
                     placeholder="Label (e.g., SOLO1)"
-                    onChange={(e) => handleSectionChange(index, 'label', e.target.value)}
+                    onChange={(e) =>
+                      handleSectionChange(index, "label", e.target.value)
+                    }
                     className="p-2 w-full rounded-l border"
                   />
 
                   <textarea
                     value={section.lyrics}
-                    onChange={(e) => handleSectionChange(index, 'lyrics', e.target.value)}
+                    onChange={(e) =>
+                      handleSectionChange(index, "lyrics", e.target.value)
+                    }
                     placeholder="Lyrics"
-                    className={`p-2 w-full resize-y rounded-lg border ${lyricsErrors[index] ? 'border-red-500 shake' : ''
-                      }`}
+                    className={`p-2 w-full resize-y rounded-lg border ${
+                      lyricsErrors[index] ? "border-red-500 shake" : ""
+                    }`}
                     rows={3}
                   />
                 </div>
@@ -399,10 +461,8 @@ export default function SongForm() {
                   onClick={() => setActiveIndex(1)}
                   className="bg-blue-500 text-white w-fit h-fit rounded"
                 >
-                  <div className='px-4 py-2 flex justify-center items-center gap-1.5'>
-                    <div>
-                      Preview
-                    </div>
+                  <div className="px-4 py-2 flex justify-center items-center gap-1.5">
+                    <div>Preview</div>
                     <div>👉</div>
                   </div>
                 </button>
@@ -417,12 +477,15 @@ export default function SongForm() {
           </div>
 
           {/* RIGHT - PREVIEW SCREEN */}
-          <div className="w-[100vw] h-full overflow-y-auto p-6 bg-white" style={{
-            backgroundImage: `url(${images.bluishbg.src})`,
-            backgroundSize: 'cover',
-            backgroundRepeat: 'no-repeat',
-            backgroundPosition: 'center',
-          }}>
+          <div
+            className="w-screen h-full overflow-y-auto p-6 bg-white"
+            style={{
+              backgroundImage: `url(${images.bluishbg.src})`,
+              backgroundSize: "cover",
+              backgroundRepeat: "no-repeat",
+              backgroundPosition: "center",
+            }}
+          >
             <div className="max-w-2xl mx-auto whitespace-pre-wrap text-white space-y-6 bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-6 shadow-lg">
               <h1 className="text-2xl font-bold mb-2">Title: {title}</h1>
               <h2 className="text-lg mb-4">Key: {key}</h2>
@@ -442,11 +505,9 @@ export default function SongForm() {
                 onClick={() => setActiveIndex(0)}
                 className="bg-blue-500 text-white w-fit h-fit rounded"
               >
-                <div className='px-4 py-2 flex justify-center items-center text-white gap-1.5'>
+                <div className="px-4 py-2 flex justify-center items-center text-white gap-1.5">
                   <div>👈</div>
-                  <div>
-                    back to edit
-                  </div>
+                  <div>back to edit</div>
                 </div>
               </button>
             </div>
@@ -462,26 +523,37 @@ export default function SongForm() {
 
         {/* Modal Info */}
         {modalInfo.type && (
-          <div className={`fixed bottom-6 whitespace-nowrap left-1/2 transform -translate-x-1/2 px-6 py-3 rounded shadow-lg text-white z-50
-    ${modalInfo.type === 'success' ? 'bg-green-600' : 'bg-red-600'}`}>
+          <div
+            className={`fixed bottom-6 whitespace-nowrap left-1/2 transform -translate-x-1/2 px-6 py-3 rounded shadow-lg text-white z-50
+    ${modalInfo.type === "success" ? "bg-green-600" : "bg-red-600"}`}
+          >
             {modalInfo.message}
           </div>
         )}
-
       </div>
 
       <style jsx global>{`
-          .shake {
+        .shake {
           animation: shake 0.3s;
+        }
+        @keyframes shake {
+          0% {
+            transform: translateX(0);
           }
-          @keyframes shake {
-          0% { transform: translateX(0); }
-          25% { transform: translateX(-4px); }
-          50% { transform: translateX(4px); }
-          75% { transform: translateX(-4px); }
-          100% { transform: translateX(0); }
+          25% {
+            transform: translateX(-4px);
           }
-     `}</style>
+          50% {
+            transform: translateX(4px);
+          }
+          75% {
+            transform: translateX(-4px);
+          }
+          100% {
+            transform: translateX(0);
+          }
+        }
+      `}</style>
     </>
-  )
+  );
 }
