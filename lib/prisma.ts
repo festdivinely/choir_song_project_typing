@@ -8,12 +8,10 @@ export const db =
   new PrismaClient({
     datasources: {
       db: {
-        url: process.env.POSTGRES_PRISMA_URL, // ← Your DB URL from .env
+        url: process.env.POSTGRES_PRISMA_URL, // <-- your secret lives here
       },
     },
-    log: ['query', 'info', 'warn', 'error'],
+    log: ['query', 'info', 'warn', 'error'], // optional
   });
 
-if (process.env.NODE_ENV !== 'production') {
-  globalForPrisma.prisma = db;
-}
+if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = db;
