@@ -1,7 +1,5 @@
-// prisma.config.ts
-import { PrismaClient } from '@prisma/client'
+import { defineConfig } from "prisma/config";
 
-// Create Prisma client normally
-export const prisma = new PrismaClient({
-  log: ['query', 'info', 'warn', 'error'], // optional, helpful for debugging
-})
+export default defineConfig({
+  schema: "prisma/schema.prisma",
+});
