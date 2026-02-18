@@ -1,3 +1,5 @@
+export const runtime = "nodejs";
+
 // /src/app/api/send-email/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { transporter } from "../../../lib/emailTransport/transporter";
