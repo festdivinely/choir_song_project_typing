@@ -10,8 +10,8 @@ model Song {
   id        String    @id @default(cuid())
   title     String
   key       String
-  createdAt DateTime  @default(now())
   sections  Section[]
+  createdAt DateTime  @default(now())
 }
 
 model Section {
